@@ -106,6 +106,8 @@ def F_g(Z_mo, MTOW, W_land_max, ZFW_max):
     return F_g
 
 def C_L_alpha_M(V,h):
+    #V = velocity [m/s]
+    #h = altitude [m]
 
     from math import sqrt
     gamma = 1.4
