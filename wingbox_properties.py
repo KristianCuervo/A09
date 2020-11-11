@@ -16,6 +16,9 @@ tip_area = 0.5 * (tip_le_h+tip_te_h) * tip_l #area of winbox at tip
 
 dz_0 = 35.7/1000; #Shift of the TE spar at root of wingbox
 dz_1 = 10.3/1000; #Shif go the TE spar at tip of wingbox
+
+te_z_root_h = dz_0
+te_z_tip_h = dz_1
     
 root_x_centroid = ((root_le_h + 2*root_te_h)/(3*(root_te_h + root_le_h)))*root_l;
 tip_x_centroid = ((tip_le_h + 2*tip_te_h)/(3*(tip_te_h + tip_le_h)))*tip_l;
@@ -159,24 +162,6 @@ def J(b, t1, t2): #calculate J using formula for thin walled structures
     
     J_t = 4*A^2/C
     return J_t
-
-def I_xx(b, t1, t2, nstr_top, nstr_bot, a_str): #calculate moment of inertia assume thin walled and spar as point area
-    if b > (wingspan/2):
-        print("Wingspan to calculate wingarea was too high");
-        sys.exit();
-    if b < 0:
-        print("Wingspan to calculate wingarea was less than 0");
-        sys.exit();
-    #interpolate to find number of stringers in the section
-
-    #find distance of the stringers from the centroid
-
-
-    #find moment of inertia using thin walled assumptions
-    
-
-
-    return I_xx
 
 def I_xx_str(b, nstr_top, nstr_bot, area_str):
      if b > (wingspan/2):
