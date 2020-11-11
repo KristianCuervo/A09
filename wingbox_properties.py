@@ -163,7 +163,7 @@ def J(b, t1, t2): #calculate J using formula for thin walled structures
     J_t = 4*A^2/C
     return J_t
 
-def I_xx_str(b, nstr_top, nstr_bot, area_str):
+def I_xx_str(b, nstr_top, nstr_bot, area_str): #calculate I of stringers around x axis through centroid of wb
      if b > (wingspan/2):
         print("Wingspan to calculate stringer Moment of interta too high");
         sys.exit();
