@@ -51,7 +51,7 @@ def V_B(V_S1, U_ref, V_C, C_L_alpha, W, Rho, c):
     V_B = V_S1 * sqrt(1+((K_G*Rho_0*U_ref*V_C*C_L_alpha)/(2*(W/S))))
     return V_B
 
-def Rho(h):
+def TempPresRho(h):
     #h = altitude [m]
 
     from math import exp
@@ -82,7 +82,7 @@ def Rho(h):
         p=p_1
 
     Rho = p/(R*T)
-    return Rho
+    return [T,p,Rho]
 
 def F_g(Z_mo, MTOW, W_land_max, ZFW_max):
     #Z_mo = maximum operating altitude [m]
@@ -100,3 +100,16 @@ def F_g(Z_mo, MTOW, W_land_max, ZFW_max):
     F_gm = sqrt(R_2 * tan(pi*R_1/4))
     F_g = 0.5 * (F_gz + F_gm)
     return F_g
+
+def C_L_alpha_M(V,h):
+
+    from math import sqrt
+    gamma = 1.4
+    R = 287.05
+    C_L_alpha_M0 = 5.2
+
+    T = TempPresRho(h)[0]
+    a = sqrt(gamma*R*T)
+    M = V/a
+    C_L_alpha_M = C_L_alpha_M0 / sqrt(1-M**2)
+    return C_L_alpha_M
