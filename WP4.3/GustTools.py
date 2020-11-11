@@ -35,20 +35,21 @@ def U_ref1(h):
         U_ref1 = n0 + ((n1-n0)/(h1-h0))*h
     return U_ref1
 
-def V_B(V_S1, U_ref, V_C, C_L_alpha, WS, Rho, c):
+def V_B(V_S1, U_ref, V_C, C_L_alpha, W, Rho, c):
     #V_S1 = clean config stall velocity (EAS) [m/s]
     #U_ref = reference gust velocity [m/s]
     #V_C = cruise velocity (EAS) [m/s]
     #C_L_alpha = lift slope [1/rad]
-    #WS = wing loading [N/m2]
+    #W = weight considered [N]
 
     from math import sqrt
     Rho_0 = 1.225
     g = 9.80665
+    S = 78.90625072
 
-    mu = (2*WS)/(Rho*c*C_L_alpha*g)
+    mu = (2*(W/S))/(Rho*c*C_L_alpha*g)
     K_G = (0.88*mu)/(5.3+mu)
-    V_B = V_S1 * sqrt(1+((K_G*Rho_0*U_ref*V_C*C_L_alpha)/(2*WS)))
+    V_B = V_S1 * sqrt(1+((K_G*Rho_0*U_ref*V_C*C_L_alpha)/(2*(W/S))))
     return V_B
 
 def Rho(h):
