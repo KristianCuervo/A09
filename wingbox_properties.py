@@ -195,7 +195,38 @@ def I_xx_str(b, nstr_top, nstr_bot, area_str):
      I_xx_str = nstr_bot * area_str * str_dist_bot ** 2 + nstr_top * area_str * str_dist_top ** 2
 
      return I_xx_str
+#some more constants, here for clarity
+dz_0 = 35.7 #vertical distance from the x axis of the TE spar bottom point root
+dz_1 = 10.3 #vertical distance from the x axis of the TE spar bottom point tip
+def I_xx(b, t1, t2): #calculate moment of inertia assume thin walled and spar as point area
+    if b > (wingspan/2):
+        print("Wingspan to calculate wingarea was too high");
+        sys.exit();
+    if b < 0:
+        print("Wingspan to calculate wingarea was less than 0");
+        sys.exit();
+   
+    #find moment of inertia using thin walled assumptions
 
+    I_x_fs = t1*wb_front_spar_h(b)**3 / 12 #I around own axes
+    I_x_rs = t1*wb_rear_spar_h(b)**3 / 12
+    dz_fs = wb_centroid(b)[1] - wb_front_spar_h(b)/2 #steiner terms 
+    dz_rs = -wb_centroid(b)[1] + ((dz_0-dz_1)/wingspan)*b + dz_0 + wb_rear_spar_h(b)/2
+
+    I_xx_fs = I_x_fs + wb_front_spar_h(b)*t1 * dz_fs**2
+    I_xx_rs = I_x_rs + wb_rear_spar_h(b)*t1 * dz_rs**2
+
+    #for top and bottom panelsonly the steiner terms are calculated as the moment around their x axis is considered negligible
+
+    dz_bp = wb_centroid(b)[1] - ((dz_0-dz_1)/wingspan)*b /2
+    dz_tp = -wb_centroid(b)[1] + wb_front_spar_h(b) + (((dz_0-dz_1)/wingspan)*b + dz_0 + wb_rear_spar_h(b) - wb_front_spar_h(b))
+
+    I_xx_bp = wb_bottom_panel(b)*t2*dz_bp**2
+    I_xx_tp = wb_top_panel(b)*t2*dz_tp**2
+
+    I = I_xx_bp + I_xx_tp + I_xx_fs + I_xx_rs
+
+    return I
 
 
 test = I_xx_str(500, 1, 1, 2500);
