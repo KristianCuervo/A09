@@ -1,6 +1,10 @@
 import scipy as sp
 from scipy import interpolate, integrate
 import numpy as np
+import matplotlib.pyplot as plt
+
+
+# # # # # # # DEFLECTION # # # # # # # # 
 
 
 
@@ -22,7 +26,7 @@ I = sp.interpolate.interp1d(I1,I2,kind="previous",fill_value="extrapolate")     
 
 # constants
 
-b = 10
+b = 29.8
 v_max = 0.15*b
 
 
@@ -39,14 +43,20 @@ def v(y):       # integral of dvdy
     v_spef,err = sp.integrate.quad(dvdy, 0, y)
     return v_spef
 
-v_list = []     # deflection as function of y (steps of 1)
-for i in range(0,b+1,1):
-    v_list.append(v(i))
+v_list = np.arange(0, b, 0.1)    # deflection as function of y (steps of 1)
+v_values = []
 
-print(v_list)
+for i in v_list:
+    v_values.append(v(i))
+
+print("total deflection equals: ", v_values[-1])
 
 
 
+
+
+
+# # # # # # # TORSION # # # # # # # # 
 
 
 
@@ -54,14 +64,37 @@ print(v_list)
 
 
 T1 = [0,2,4,6,8,10]     # y location
-T2 = [10,9,8,6,4,0]     # value
+T2 = [5,5,5,5,5,5]     # value
 
-T = sp.interpolate.interp1d(M1,M2,kind="linear",fill_value="extrapolate")     # make a function of M1 and M2 (if step-wise "previous" else "linear")
+T = sp.interpolate.interp1d(T1,T2,kind="linear",fill_value="extrapolate")     # make a function of M1 and M2 (if step-wise "previous" else "linear")
+
 
 # import torsional moment of inertia
 
 
 J1 = [0,2,4,6,8,10]     # y location
-J2 = [10,9,8,6,4,0]     # value
+J2 = [1,1,1,1,1,1]     # value
 
-J = sp.interpolate.interp1d(M1,M2,kind="previous",fill_value="extrapolate")     # make a function of M1 and M2 (if step-wise "previous" else "linear")
+J = sp.interpolate.interp1d(J1,J2,kind="previous",fill_value="extrapolate")     # make a function of M1 and M2 (if step-wise "previous" else "linear")
+
+
+def g(y):       # right-hand side of formula
+    G = 10
+    return T(y) / (G * J(y))
+
+def theta(y):   # left-hand side of formula
+    bla,err2 = sp.integrate.quad(g, 0, y)
+    return bla
+
+
+theta_list = np.arange(0, b, 0.1)       # range of numbers
+theta_values = []                       # empty list for twist values
+for i in theta_list:                    # calculate twist values
+    theta_values.append(theta(i))
+
+print("total twist equals: ", theta_values[-1])
+
+
+plt.plot(v_list, v_values)              # plot graphs (comment one out if you want one alone)
+plt.plot(theta_list, theta_values)
+plt.show()
