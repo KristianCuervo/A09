@@ -46,10 +46,10 @@ def V_S1(W,h,C_L_max_clean,S):
     #S = wing surface area [m2]
 
     from math import sqrt
-    V_S1 = sqrt(W/(0.5*TempPresRho(h)[2]*S*C_L_max_clean))
+    V_S1 = sqrt(W/(0.5*TempPresRho(h,g,R,T_0,p_0)[2]*S*C_L_max_clean))
     return V_S1
 
-def V_B(V_S1, U_ref, V_C, C_L_alpha, W, Rho, c):
+def V_B(V_S1, U_ref, V_C, C_L_alpha, W, Rho, c,Rho_0,g):
     #V_S1 = clean config stall velocity (EAS) [m/s]
     #U_ref = reference gust velocity [m/s]
     #V_C = cruise velocity (EAS) [m/s]
@@ -57,25 +57,19 @@ def V_B(V_S1, U_ref, V_C, C_L_alpha, W, Rho, c):
     #W = weight considered [N]
 
     from math import sqrt
-    Rho_0 = 1.225
-    g = 9.80665
-
     mu = (2*(W/S))/(Rho*c*C_L_alpha*g)
     K_G = (0.88*mu)/(5.3+mu)
     V_B = V_S1 * sqrt(1+((K_G*Rho_0*U_ref*V_C*C_L_alpha)/(2*(W/S))))
     return V_B
 
-def TempPresRho(h):
+def TempPresRho(h,g,R,T_0,p_0):
     #h = altitude [m]
 
     from math import exp
-
     H = [0,11000,20000,32000,47000,51000,71000,86000]
     a = [-0.0065,0,0.001,0.0028,0,-0.0028,-0.002]
-    g = 9.80665
-    R = 287.05
-    T=288.15
-    p=101325
+    T=T_0
+    p=p_0
 
     lvl = 0
     def detlvl(h,lvl):
@@ -115,22 +109,19 @@ def F_g(Z_mo, MTOW, W_land_max, ZFW_max):
     F_g = 0.5 * (F_gz + F_gm)
     return F_g
 
-def C_L_alpha_M(V,h):
+def C_L_alpha_M(V,h,R,C_L_alpha_M0,gamma):
     #V = velocity [m/s]
     #h = altitude [m]
 
     from math import sqrt
-    gamma = 1.4
-    R = 287.05
-    C_L_alpha_M0 = 5.2
 
-    T = TempPresRho(h)[0]
+    T = TempPresRho(h,g,R,T_0,p_0)[0]
     a = sqrt(gamma*R*T)
     M = V/a
     C_L_alpha_M = C_L_alpha_M0 / sqrt(1-M**2)
     return C_L_alpha_M
 
-def delta_n_s(t,U_ds,V,H,W,C_L_alpha,rho):
+def delta_n_s(t,U_ds,V,H,W,C_L_alpha,rho,g,S):
     #t = time into gust [s]
     #U_ds = design gust velocity [m/s]
     #V = velocity (TAS) [m/s]
@@ -143,8 +134,6 @@ def delta_n_s(t,U_ds,V,H,W,C_L_alpha,rho):
     from math import sin
     from math import exp
     from math import pi
-    g = 9.80665
-    S = 78.90625072
 
     omega = pi*V/H
     Lambda = (W*2)/(S*C_L_alpha*rho*V*g)
