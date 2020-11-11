@@ -45,7 +45,6 @@ def V_B(V_S1, U_ref, V_C, C_L_alpha, W, Rho, c):
     from math import sqrt
     Rho_0 = 1.225
     g = 9.80665
-    S = 78.90625072
 
     mu = (2*(W/S))/(Rho*c*C_L_alpha*g)
     K_G = (0.88*mu)/(5.3+mu)
