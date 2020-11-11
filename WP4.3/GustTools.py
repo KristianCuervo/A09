@@ -43,6 +43,14 @@ def V_B(W,h,U_ref,S,c,V_C,C_L_alpha,C_L_max_clean,g,R,Rho_0,T_0,p_0):
     V_B = V_S1(W,h,C_L_max_clean,S,g,R,T_0,p_0) * sqrt(1+((K_G*Rho_0*U_ref*V_C*C_L_alpha)/(2*(W/S))))
     return V_B
 
+def V_D(h,g,R,gamma,T_0,p_0):
+    from math import sqrt
+
+    T = TempPresRho(h, g, R, T_0, p_0)[0]
+    a = sqrt(gamma * R * T)
+    V_D = a * (0.85+0.05)
+    return V_D
+
 def TempPresRho(h,g,R,T_0,p_0):
     from math import exp
     H = [0,11000,20000,32000,47000,51000,71000,86000]
@@ -92,13 +100,13 @@ def C_L_alpha_M(V,h,C_L_alpha_M0,gamma,R,g,T_0,p_0):
     C_L_alpha_M = C_L_alpha_M0 / sqrt(1-M**2)
     return C_L_alpha_M
 
-def delta_n_s(t,V,W,U_ds,H,S,C_L_alpha,rho,g):
+def delta_n_s(t,V,W,h,U_ds,H,S,C_L_alpha,g,R,T_0,p_0):
     from math import cos
     from math import sin
     from math import exp
     from math import pi
 
     omega = pi*V/H
-    Lambda = (W*2)/(S*C_L_alpha*rho*V*g)
+    Lambda = (W*2)/(S*C_L_alpha*TempPresRho(h,g,R,T_0,p_0)[2]*V*g)
     delta_n_s = (U_ds/(2*g))*((omega*sin(omega*t))+((1/(1+(omega*Lambda)**-2))*((exp(-t/Lambda)/Lambda)-(cos(omega*t)/Lambda)-(omega*sin(omega*t)))))
     return delta_n_s
