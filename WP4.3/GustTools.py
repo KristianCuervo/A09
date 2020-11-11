@@ -113,3 +113,24 @@ def C_L_alpha_M(V,h):
     M = V/a
     C_L_alpha_M = C_L_alpha_M0 / sqrt(1-M**2)
     return C_L_alpha_M
+
+def delta_n_s(t,U_ds,V,H,W,C_L_alpha,rho):
+    #t = time into gust [s]
+    #U_ds = design gust velocity [m/s]
+    #V = velocity (TAS) [m/s]
+    #H = gust gradient length [m]
+    #W = weight considered [N]
+    #C_L_alpha = lift slope [1/rad]
+    #rho = air density [kg/m3]
+
+    from math import cos
+    from math import sin
+    from math import exp
+    from math import pi
+    g = 9.80665
+    S = 78.90625072
+
+    omega = pi*V/H
+    Lambda = (W*2)/(S*C_L_alpha*rho*V*g)
+    delta_n_s = (U_ds/(2*g))*((omega*sin(omega*t))+((1/(1+(omega*Lambda)**-2))*((exp(-t/Lambda)/Lambda)-(cos(omega*t)/Lambda)-(omega*sin(omega*t)))))
+    return delta_n_s
