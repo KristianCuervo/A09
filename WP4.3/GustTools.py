@@ -49,7 +49,7 @@ def V_S1(W,h,C_L_max_clean,S):
     V_S1 = sqrt(W/(0.5*TempPresRho(h,g,R,T_0,p_0)[2]*S*C_L_max_clean))
     return V_S1
 
-def V_B(V_S1, U_ref, V_C, C_L_alpha, W, Rho, c,Rho_0,g):
+def V_B(U_ref,V_C,C_L_alpha,W,Rho,c,Rho_0,g,h,C_L_max_clean,S):
     #V_S1 = clean config stall velocity (EAS) [m/s]
     #U_ref = reference gust velocity [m/s]
     #V_C = cruise velocity (EAS) [m/s]
@@ -59,7 +59,7 @@ def V_B(V_S1, U_ref, V_C, C_L_alpha, W, Rho, c,Rho_0,g):
     from math import sqrt
     mu = (2*(W/S))/(Rho*c*C_L_alpha*g)
     K_G = (0.88*mu)/(5.3+mu)
-    V_B = V_S1 * sqrt(1+((K_G*Rho_0*U_ref*V_C*C_L_alpha)/(2*(W/S))))
+    V_B = V_S1(W,h,C_L_max_clean,S) * sqrt(1+((K_G*Rho_0*U_ref*V_C*C_L_alpha)/(2*(W/S))))
     return V_B
 
 def TempPresRho(h,g,R,T_0,p_0):
