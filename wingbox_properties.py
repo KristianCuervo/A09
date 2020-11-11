@@ -207,13 +207,14 @@ def I_xx(b, t1, t2): #calculate moment of inertia assume thin walled and spar as
     I_xx_fs = I_x_fs + wb_front_spar_h(b)*t1 * dz_fs**2
     I_xx_rs = I_x_rs + wb_rear_spar_h(b)*t1 * dz_rs**2
 
-    #for top and bottom panelsonly the steiner terms are calculated as the moment around their x axis is considered negligible
+    #for top  panel only the steiner terms are calculated as the moment around their x axis is considered negligible
 
     dz_bp = wb_centroid(b)[1] - ((dz_0-dz_1)/wingspan)*b /2
     dz_tp = -wb_centroid(b)[1] + wb_front_spar_h(b) + (((dz_0-dz_1)/wingspan)*b + dz_0 + wb_rear_spar_h(b) - wb_front_spar_h(b))
+    I_x_bp = t2 *wb_bottom_panel(b)*(wb_bottom_panel(b)**2 * (((((dz_0-dz_1)/wingspan)*b + dz_0)/wb_bottom_panel(b))**2))
 
-    I_xx_bp = wb_bottom_panel(b)*t2*dz_bp**2
-    I_xx_tp = wb_top_panel(b)*t2*dz_tp**2
+    I_xx_bp = wb_bottom_panel(b) * t2 * dz_bp**2 + I_x_bp
+    I_xx_tp = wb_top_panel(b) * t2 * dz_tp**2
 
     I = I_xx_bp + I_xx_tp + I_xx_fs + I_xx_rs
 
