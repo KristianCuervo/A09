@@ -1,21 +1,21 @@
 import sys
  
-wingspan = 27.83 * 1000;
+wingspan = 27.83 ;
 
 #Defining variables for wingbox size at root and tip
-root_le_h = 581.88; #Height of leading edge of wingbox at root
-root_te_h = 553.5; #Height of trailing edge of wingbox at root
-root_l = 1784; #Length of wingbox at root
+root_le_h = 581.88/1000; #Height of leading edge of wingbox at root
+root_te_h = 553.5/1000; #Height of trailing edge of wingbox at root
+root_l = 1784/1000; #Length of wingbox at root
     
-tip_le_h = 157.31; #Height of leading edge of wingbox at tip
-tip_te_h = 148.66; #Height of trailing edge of wingbox at tip
-tip_l = 484; #Length of wingbox at tip
+tip_le_h = 157.31/1000; #Height of leading edge of wingbox at tip
+tip_te_h = 148.66/1000; #Height of trailing edge of wingbox at tip
+tip_l = 484/1000; #Length of wingbox at tip
     
 root_area = 0.5 * (root_le_h+root_te_h) * root_l #area of wingbox at root
 tip_area = 0.5 * (tip_le_h+tip_te_h) * tip_l #area of winbox at tip
 
-te_z_root_h = 35.7; #Shift of the TE spar at root of wingbox
-te_z_tip_h = 10.3; #Shif go the TE spar at tip of wingbox
+dz_0 = 35.7/1000; #Shift of the TE spar at root of wingbox
+dz_1 = 10.3/1000; #Shif go the TE spar at tip of wingbox
     
 root_x_centroid = ((root_le_h + 2*root_te_h)/(3*(root_te_h + root_le_h)))*root_l;
 tip_x_centroid = ((tip_le_h + 2*tip_te_h)/(3*(tip_te_h + tip_le_h)))*tip_l;
@@ -195,9 +195,7 @@ def I_xx_str(b, nstr_top, nstr_bot, area_str):
      I_xx_str = nstr_bot * area_str * str_dist_bot ** 2 + nstr_top * area_str * str_dist_top ** 2
 
      return I_xx_str
-#some more constants, here for clarity
-dz_0 = 35.7 #vertical distance from the x axis of the TE spar bottom point root
-dz_1 = 10.3 #vertical distance from the x axis of the TE spar bottom point tip
+
 def I_xx(b, t1, t2): #calculate moment of inertia assume thin walled and spar as point area
     if b > (wingspan/2):
         print("Wingspan to calculate wingarea was too high");
@@ -228,6 +226,5 @@ def I_xx(b, t1, t2): #calculate moment of inertia assume thin walled and spar as
 
     return I
 
-
-test = I_xx_str(500, 1, 1, 2500);
+test = I_xx_str(0.5, 1, 1, 2.500);
 print(test);
