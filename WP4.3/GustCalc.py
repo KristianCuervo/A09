@@ -15,6 +15,7 @@ Rho_0 = 1.225           #sea level density [kg/m3]
 p_0 = 101325            #sea level pressure [Pa]
 T_0 = 288.15            #sea level temperature [K]
 gamma = 1.4             #specific heat ratios of air [-]
+R = 298.05              #air specific gas constant [J/Kg K]
 
 #Per diagram inputs
 h =                     #considered altitude [m]

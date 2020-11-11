@@ -1,26 +1,18 @@
-def U(U_ds,s,H):
-    #U_ds = design gust velocity [m/s]
-    #s = distance into gust gradient s=[0,2H] [m]
-    #H = gust gradient distance [m]
+def U(s,U_ds,H):
     from math import cos
     from math import pi
     U = (U_ds/2)*(1-cos(pi*s/H))
     return U
 
 def U_ds(U_ref,F_g,H):
-    #U_ref = reference gust velocity [m/s]
-    #F_g = flight alleviation factor
-    #H = gust gradient distance [m]
     U_ds = U_ref*F_g*(H/107)**(1/6)
     return U_ds
 
 def H_max(c):
-    #c = mean aerodynamic chord [m]
     H=max(107,12.5*c)
     return H
 
 def U_ref1(h):
-    #h = altitude [m]
     h0 = 0
     n0 = 17.07
     h1 = 4572
@@ -39,32 +31,19 @@ def U_ref2(h):
     U_ref2 = U_ref1(h) * 0.5
     return U_ref2
 
-def V_S1(W,h,C_L_max_clean,S):
-    #W = considered weight [N]
-    #h = considered altitude [h]
-    #C_L_max_clean = max lift coefficient (clean config) [-]
-    #S = wing surface area [m2]
-
+def V_S1(W,h,C_L_max_clean,S,g,R,T_0,p_0):
     from math import sqrt
     V_S1 = sqrt(W/(0.5*TempPresRho(h,g,R,T_0,p_0)[2]*S*C_L_max_clean))
     return V_S1
 
-def V_B(U_ref,V_C,C_L_alpha,W,Rho,c,Rho_0,g,h,C_L_max_clean,S):
-    #V_S1 = clean config stall velocity (EAS) [m/s]
-    #U_ref = reference gust velocity [m/s]
-    #V_C = cruise velocity (EAS) [m/s]
-    #C_L_alpha = lift slope [1/rad]
-    #W = weight considered [N]
-
+def V_B(W,h,U_ref,S,c,V_C,C_L_alpha,C_L_max_clean,g,R,Rho_0,T_0,p_0):
     from math import sqrt
-    mu = (2*(W/S))/(Rho*c*C_L_alpha*g)
+    mu = (2*(W/S))/(TempPresRho(h,g,R,T_0,p_0)[2]*c*C_L_alpha*g)
     K_G = (0.88*mu)/(5.3+mu)
-    V_B = V_S1(W,h,C_L_max_clean,S) * sqrt(1+((K_G*Rho_0*U_ref*V_C*C_L_alpha)/(2*(W/S))))
+    V_B = V_S1(W,h,C_L_max_clean,S,g,R,T_0,p_0) * sqrt(1+((K_G*Rho_0*U_ref*V_C*C_L_alpha)/(2*(W/S))))
     return V_B
 
 def TempPresRho(h,g,R,T_0,p_0):
-    #h = altitude [m]
-
     from math import exp
     H = [0,11000,20000,32000,47000,51000,71000,86000]
     a = [-0.0065,0,0.001,0.0028,0,-0.0028,-0.002]
@@ -93,11 +72,6 @@ def TempPresRho(h,g,R,T_0,p_0):
     return [T,p,Rho]
 
 def F_g(Z_mo, MTOW, W_land_max, ZFW_max):
-    #Z_mo = maximum operating altitude [m]
-    #MTOW = maximum take off weight [N]
-    #W_land_max = maximum landing weight [N]
-    #ZFW_max = maximum zero fuel weight [N]
-
     from math import sqrt
     from math import tan
     from math import pi
@@ -109,10 +83,7 @@ def F_g(Z_mo, MTOW, W_land_max, ZFW_max):
     F_g = 0.5 * (F_gz + F_gm)
     return F_g
 
-def C_L_alpha_M(V,h,R,C_L_alpha_M0,gamma):
-    #V = velocity [m/s]
-    #h = altitude [m]
-
+def C_L_alpha_M(V,h,C_L_alpha_M0,gamma,R,g,T_0,p_0):
     from math import sqrt
 
     T = TempPresRho(h,g,R,T_0,p_0)[0]
@@ -121,15 +92,7 @@ def C_L_alpha_M(V,h,R,C_L_alpha_M0,gamma):
     C_L_alpha_M = C_L_alpha_M0 / sqrt(1-M**2)
     return C_L_alpha_M
 
-def delta_n_s(t,U_ds,V,H,W,C_L_alpha,rho,g,S):
-    #t = time into gust [s]
-    #U_ds = design gust velocity [m/s]
-    #V = velocity (TAS) [m/s]
-    #H = gust gradient length [m]
-    #W = weight considered [N]
-    #C_L_alpha = lift slope [1/rad]
-    #rho = air density [kg/m3]
-
+def delta_n_s(t,V,W,U_ds,H,S,C_L_alpha,rho,g):
     from math import cos
     from math import sin
     from math import exp
