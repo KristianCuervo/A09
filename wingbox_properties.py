@@ -86,7 +86,15 @@ def wb_centroid(b): #Calculates centroid of wingbox at a span location b in mm w
     z_centroid = m*b + c;
     
     return (x_centroid, z_centroid);
+ 
+def bottompanel_dz(b):
     
+    m = - (te_z_root_h - te_z_tip_h)/(wingspan/2)
+    c = te_z_root_h
+    dz = m*b + c
+    
+    return dz
+   
 def wb_front_spar_h(b): #Calculates the height of the front spar of the wb at a span pos in mm.
     
     if b > (wingspan/2):
@@ -171,8 +179,8 @@ def I_xx_str(b, nstr_top, nstr_bot, area_str): #calculate I of stringers around 
         print("Wingspan to calculate stringer Moment of interta less than 0");
         sys.exit();     
     
-     dist_bot = wb_centroid(b)[1]
-     dist_top = (wb_front_spar_h(b) + wb_rear_spar_h(b))/2 - wb_centroid(b)[1]
+     dist_bot = wb_centroid(b)[1] - (bottompanel_dz(b)/2)
+     dist_top = wb_front_spar_h(b) - wb_centroid(b)[1] + ((bottompanel_dz(b) + wb_rear_spar_h(b) - wb_front_spar_h(b))/2)
      
      str_dist_bot = dist_bot - (area_str ** 0.5)/2
      str_dist_top = dist_top - (area_str ** 0.5)/2
@@ -210,6 +218,3 @@ def I_xx(b, t1, t2): #calculate moment of inertia assume thin walled and spar as
     I = I_xx_bp + I_xx_tp + I_xx_fs + I_xx_rs
 
     return I
-
-test = I_xx_str(0.5, 1, 1, 2.500);
-print(test);
