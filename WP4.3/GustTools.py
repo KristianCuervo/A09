@@ -39,6 +39,16 @@ def U_ref2(h):
     U_ref2 = U_ref1(h) * 0.5
     return U_ref2
 
+def V_S1(W,h,C_L_max_clean,S):
+    #W = considered weight [N]
+    #h = considered altitude [h]
+    #C_L_max_clean = max lift coefficient (clean config) [-]
+    #S = wing surface area [m2]
+
+    from math import sqrt
+    V_S1 = sqrt(W/(0.5*TempPresRho(h)[2]*S*C_L_max_clean))
+    return V_S1
+
 def V_B(V_S1, U_ref, V_C, C_L_alpha, W, Rho, c):
     #V_S1 = clean config stall velocity (EAS) [m/s]
     #U_ref = reference gust velocity [m/s]
