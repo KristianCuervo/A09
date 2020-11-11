@@ -35,6 +35,10 @@ def U_ref1(h):
         U_ref1 = n0 + ((n1-n0)/(h1-h0))*h
     return U_ref1
 
+def U_ref2(h):
+    U_ref2 = U_ref1(h) * 0.5
+    return U_ref2
+
 def V_B(V_S1, U_ref, V_C, C_L_alpha, W, Rho, c):
     #V_S1 = clean config stall velocity (EAS) [m/s]
     #U_ref = reference gust velocity [m/s]
