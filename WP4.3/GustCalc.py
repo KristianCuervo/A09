@@ -72,16 +72,10 @@ def Print_Results(W,h,g,R,T_0,p_0,V_B,V_C,V_D,B,G,C,F,D,E):
     file.close()
 
 #main
-# h = int(input("Altitude: ")) #considered altitude [m]
-# W = int(input("Weight: "))   #weight considered [N]
-
-print(f"W     ,h     ,Rho   ,V_B   ,B     ,G     ,V_C   ,C     ,F     ,V_D   ,D     ,E")
-
 hlist = np.loadtxt("input.csv",delimiter=",",skiprows=1,usecols=[0])
 Wlist = np.loadtxt("input.csv",delimiter=",",skiprows=1,usecols=[1])
 
-
-
+print(f"W     ,h     ,Rho   ,V_B   ,B     ,G     ,V_C   ,C     ,F     ,V_D   ,D     ,E")
 for i in range(len(hlist)):
     h = hlist[i]
     W = Wlist[i]
