@@ -18,48 +18,60 @@ T_0 = 288.15            #sea level temperature [K]
 gamma = 1.4             #specific heat ratios of air [-]
 R = 298.05              #air specific gas constant [J/Kg K]
 
-#Per diagram inputs
-h =                     #considered altitude [m]
-W =                     #weight considered [N]
-
 #MaxGust
-O = [0,1]
+def CalcMaxGust(c,S,C_L_alpha_M0,C_L_max_clean,V_C,Z_mo,MTOW,W_land_max,ZFW_max,g,Rho_0,p_0,T_0,gamma,R,h,W):
 
-#V_B
-V = V_B(W,h,U_ref1(h),S,c,V_C,C_L_alpha_M0,C_L_max_clean,g,R,Rho_0,T_0,p_0)
-C_L_alpha = C_L_alpha_M(V,h,C_L_alpha_M0,gamma,R,g,T_0,p_0)
-H = H_max(c)
-t = H_max(c)/V
-U_ref = U_ref(h)
-F_g = F_g(Z_mo, MTOW, W_land_max, ZFW_max)
-U_ds = U_ds(U_ref,F_g,H)
-dn = delta_n_s(t,V,W,h,U_ds,H,S,C_L_alpha,g,R,T_0,p_0)
+    #V_B
+    V = V_B(W,h,U_ref1(h),S,c,V_C,C_L_alpha_M0,C_L_max_clean,g,R,Rho_0,T_0,p_0)
+    C_L_alpha = C_L_alpha_M(V,h,C_L_alpha_M0,gamma,R,g,T_0,p_0)
+    H = H_max(c)
+    t = H_max(c)/V
+    U_ref = U_ref1(h)
+    F_g = F_g(Z_mo,MTOW,W_land_max,ZFW_max)
+    U_ds = U_ds(U_ref,F_g,H)
+    dn = delta_n_s(t,V,W,h,U_ds,H,S,C_L_alpha,g,R,T_0,p_0)
 
-B = [V,1+dn]
-G = [V,1-dn]
+    B = [V,1+dn]
+    G = [V,1-dn]
 
-#V_C
-V = V_C
-C_L_alpha = C_L_alpha_M(V,h,C_L_alpha_M0,gamma,R,g,T_0,p_0)
-H = H_max(c)
-t = H_max(c)/V
-U_ref = U_ref(h)
-F_g = F_g(Z_mo, MTOW, W_land_max, ZFW_max)
-U_ds = U_ds(U_ref,F_g,H)
-dn = delta_n_s(t,V,W,h,U_ds,H,S,C_L_alpha,g,R,T_0,p_0)
+    #V_C
+    V = V_C
+    C_L_alpha = C_L_alpha_M(V,h,C_L_alpha_M0,gamma,R,g,T_0,p_0)
+    H = H_max(c)
+    t = H_max(c)/V
+    U_ref = U_ref1(h)
+    F_g = F_g(Z_mo, MTOW, W_land_max, ZFW_max)
+    U_ds = U_ds(U_ref,F_g,H)
+    dn = delta_n_s(t,V,W,h,U_ds,H,S,C_L_alpha,g,R,T_0,p_0)
 
-C = [V,1+dn]
-F = [V,1-dn]
+    C = [V,1+dn]
+    F = [V,1-dn]
 
-#V_D
-V = V_D(h,g,R,gamma,T_0,p_0)
-C_L_alpha = C_L_alpha_M(V,h,C_L_alpha_M0,gamma,R,g,T_0,p_0)
-H = H_max(c)
-t = H_max(c)/V
-U_ref = U_ref(h)
-F_g = F_g(Z_mo, MTOW, W_land_max, ZFW_max)
-U_ds = U_ds(U_ref,F_g,H)
-dn = delta_n_s(t,V,W,h,U_ds,H,S,C_L_alpha,g,R,T_0,p_0)
+    #V_D
+    V = V_D(h,g,R,gamma,T_0,p_0)
+    C_L_alpha = C_L_alpha_M(V,h,C_L_alpha_M0,gamma,R,g,T_0,p_0)
+    H = H_max(c)
+    t = H_max(c)/V
+    U_ref = U_ref(h)
+    F_g = F_g(Z_mo, MTOW, W_land_max, ZFW_max)
+    U_ds = U_ds(U_ref,F_g,H)
+    dn = delta_n_s(t,V,W,h,U_ds,H,S,C_L_alpha,g,R,T_0,p_0)
 
-D = [V,1+dn]
-E = [V,1-dn]
+    D = [V,1+dn]
+    E = [V,1-dn]
+
+    return(V_B,B,G,V_C,C,F,V_D,D,E)
+
+#Print Results
+def Print_Results(V_B,B,G,V_C,C,F,V_D,D,E):
+    file = open("results.txt","w")
+    file.write(f"{V_B:5.2f},{B:4.3f},{G:4.3f},{V_C:5.2f},{C:4.3f},{F:4.3f},{V_D:5.2f},{D:4.3f},{E:4.3f}")
+    file.close()
+    print(f"{V_B:5.2f},{B:4.3f},{G:4.3f},{V_C:5.2f},{C:4.3f},{F:4.3f},{V_D:5.2f},{D:4.3f},{E:4.3f}")
+
+#main
+h = input("Altitude: ") #considered altitude [m]
+W = input("Weight: ")   #weight considered [N]
+Points=CalcMaxGust(c,S,C_L_alpha_M0,C_L_max_clean,V_C,Z_mo,MTOW,W_land_max,ZFW_max,g,Rho_0,p_0,T_0,gamma,R,h,W)
+print(f"V_B ,B  ,G  ,V_C ,C  ,F  ,V_D ,D  ,E")
+Print_Results(Points[0],Points[1],Points[2],Points[3],Points[4],Points[5],Points[6],Points[7],Points[8])
