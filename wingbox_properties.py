@@ -1,4 +1,7 @@
 import sys
+import numpy as np
+import scipy as sp
+from scipy import interpolate, integrate
  
 wingspan = 27.83 ;
 
@@ -189,6 +192,8 @@ def I_xx_str(b, nstr_top, nstr_bot, area_str): #calculate I of stringers around 
 
      return I_xx_str
 
+
+
 def I_xx(b, t1, t2): #calculate moment of inertia assume thin walled and spar as point area
     if b > (wingspan/2):
         print("Wingspan to calculate wingarea was too high");
@@ -219,3 +224,28 @@ def I_xx(b, t1, t2): #calculate moment of inertia assume thin walled and spar as
     I = I_xx_bp + I_xx_tp + I_xx_fs + I_xx_rs
 
     return I
+
+
+spanlist = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+span_inertias = []
+
+for i in spanlist:      # clean wing box
+    span_inertias.append(I_xx(i, 0.01, 0.01))
+
+
+section = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+section_top_str = [3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 0, 0, 0, 0]
+section_bot_str = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0]
+S1 = sp.interpolate.interp1d(section,section_top_str,kind="previous",fill_value="extrapolate")
+S2 = sp.interpolate.interp1d(section, section_bot_str, kind="previous", fill_value="extrapolate")
+
+string_inertias = []
+for i in spanlist:
+    string_inertias.append(I_xx_str(i, S1(i), S2(i), 1.2/10000))
+
+
+total_inertia = []
+for i in range(10):
+    total_inertia.append(span_inertias[i] + string_inertias[i])
+
+print(total_inertia)
