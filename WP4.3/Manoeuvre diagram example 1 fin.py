@@ -9,7 +9,7 @@ plt.xlabel('V')
 plt.ylabel('n')
 
 # giving a title to my graph
-plt.title('Manuovering; MTOW & Alt')
+plt.title('Load Diagram; OEW & Sea-Level Altitude')
 
 # constants
 S=78.906
@@ -100,7 +100,7 @@ def f(x):
     return round(((x/V_s0_eas)**2.), 4)
 
 def h(x):
-    return (x/59.905)**2
+    return (x/V_s1_eas)**2
 
 
 def l(x):
@@ -113,10 +113,11 @@ def l(x):
 #     return 122.5763
 
 
-
 # set variables
-hm = 13106.4        #height considered
-W = MTOW            #weight considered
+#height considered
+hm = 0
+#weight considered
+W = OEW
 
 n_max = get_n_max(W)
 P = TempPresRho(hm, g, R, T0, P0)[1]
@@ -137,7 +138,6 @@ V_F_n1_eas = V_s0_eas * sqrt(1)
 V_F_n2_eas = V_s0_eas * sqrt(2)
 V_A_eas = EAS(V_A_tas(n_max, V_s1_tas), rho)
 V_A_n2_eas = V_s1_eas * sqrt(2)
-
 gust_points = CalcMaxGust(c,S,C_L_alpha_M0,C_lmaxclean,V_C_TAS,Z_mo,MTOW,W_land_max,ZFW_max,g,rho0,P0,T0,gamma,R,hm,W)
 
 #Plotting
@@ -164,12 +164,12 @@ plt.plot(xh, yh, 'b')
 
 #Flaps up maximum
 xi = [V_A_eas, V_D_EAS]
-yi = [3.59, 3.59]
+yi = [n_max, n_max]
 plt.plot (xi, yi, 'b')
 
 #V_D limit
 xz = [V_D_EAS, V_D_EAS]
-yz = [0, 3.59]
+yz = [0, n_max]
 plt.plot(xz, yz, 'b')
 
 #Negative V_C to V_D
@@ -200,17 +200,22 @@ x_gust_bot = [0,V_B_EAS,V_C_EAS,V_D_EAS]
 y_gust_bot = [1,gust_points[1],gust_points[3],gust_points[5]]
 plt.plot(x_gust_bot, y_gust_bot, 'r')
 
-#V_S0
-x_V_s0 = [V_s0_eas, V_s0_eas]
-y_V_s0 = [0, 1]
-plt.plot(x_V_s0,y_V_s0,'k--')
+#vertical
+x_gust_ver = [V_D_EAS, V_D_EAS]
+y_gust_ver = [gust_points[4], gust_points[5]]
+plt.plot(x_gust_ver, y_gust_ver, 'r')
+
+#V_S1
+x_V_s1 = [V_s1_eas, V_s1_eas]
+y_V_s1 = [0, 1]
+plt.plot(x_V_s1,y_V_s1,'k--')
 #V_A
 x_V_A = [V_A_eas, V_A_eas]
 y_V_A = [0, n_max]
 plt.plot(x_V_A,y_V_A,'k--')
 #V_C
 x_V_C = [V_C_EAS, V_C_EAS]
-y_V_C = [0, n_max]
+y_V_C = [0, min(n_max,h(V_C_EAS))]
 plt.plot(x_V_C,y_V_C,'k--')
 
 #horizontal axis line
