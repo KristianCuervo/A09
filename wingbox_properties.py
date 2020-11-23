@@ -256,9 +256,7 @@ def I_xx_str(b, area_str): #calculate I of stringers around x axis through centr
 
     return I_xx_str    
 
-#total_inertia = []
-#for i in range(10):
-  #  total_inertia.append(span_inertias[i] + string_inertias[i])
+
 
 def mass(b,t1,t2, n):
     A = (wb_top_panel(b) + wb_bottom_panel(b))*t2 + (wb_front_spar_h(b) + wb_rear_spar_h(b))*t1
