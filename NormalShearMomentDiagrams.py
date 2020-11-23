@@ -140,10 +140,17 @@ plt.show()          #show all the 3 plots in one diagram """
 
 def TorqueFunc(y):   #Return torque at a specific position of span 
     
-    aoa_d #desired AoA
+    #desired AoA
     c_y = interpolation(y, span, chord)
     cp_x_10 = interpolation(y, span, Xcp_10_frac )
     cp_x_0 = interpolation(y, span, Xcp_0_frac )
+
+    #also add moment calculation because life is meaningless
+    CM_0 = interpolation(y, span , Cm_0)
+    CM_10 = interpolation(y, span, Cm_10)
+    Cm_alpha = (CM_10-CM_0)/np.radians(10)
+    Cm = Cm_alpha*aoa_d + CM_0
+    Mom = Cm*q*c_y**2
 
     #Calculate position of c.p. at span pos (y)
     cp_x_alpha = (cp_x_10-cp_x_0)/np.radians(10)
@@ -154,15 +161,23 @@ def TorqueFunc(y):   #Return torque at a specific position of span
     wingbox_airfoil_centroid_x = (wingbox_centroid_pos_x/c_y)+0.2 #percentage of chord
     d1 = cp_x - (wingbox_airfoil_centroid_x * c_y)#distance between cp x position and centroid x position    
         
-    torque = Normalforce(y) * d1 #Normal force * distance
+    torque = Normalforce(y) * d1  + Mom#Normal force * distance 
+    
+
+
     return torque
 
 torque_array = []
+max_torque = -TorqueFunc(13.915)
 
 for i in np.arange(0, 13.916, .1):
     span_array = np.append(span_array, i)
-    torque = TorqueFunc(i) #momentforce(i) gives negative values here so
+    torque = TorqueFunc(i) + max_torque #momentforce(i) gives negative values here some
+    
+    
     torque_array = np.append(torque_array, torque)
-plt.plot(span_array, Moment_array, label = 'Torque along span (around y-axis) [N/m]')
+
+
+plt.plot(span_array, torque_array, label = 'Torque along span (around y-axis) [N/m]')
 plt.legend()        #makes the labels visible
 plt.show()          #show all the 3 plots in one diagram 
