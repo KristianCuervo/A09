@@ -3,6 +3,7 @@ import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
 from scipy import interpolate, integrate
+from wingbox_properties import wb_centroid
 
 def interpolation(x_coor, array_x, array_y):
     f = sp.interpolate.interp1d(array_x, array_y, kind = 'cubic', fill_value = 'extrapolate') 
@@ -125,54 +126,43 @@ print('total moment at root', totalmoment)
 Moment_array = np.array([])
 span_array = np.array([])
 
-for i in np.arange(0, 13.916, .1):
+""" for i in np.arange(0, 13.916, .1):
     span_array = np.append(span_array, i)
     moment = totalmoment + Momentforce(i)       #momentforce(i) gives negative values here so
     Moment_array = np.append(Moment_array, moment)
 plt.plot(span_array, Moment_array, label = 'Moment along span [N/m]')
 plt.legend()        #makes the labels visible
-plt.show()          #show all the 3 plots in one diagram
+plt.show()          #show all the 3 plots in one diagram """
 
 
 
 ############## TORQUE DIAGRAM
 
-def X_cp(y): #Returns distance from root LE to c.p. at a span pos, y, in the x direction
-    x = span 
-    y_0aoa = Xcp_0_frac
-    
-    m, b = np.polyfit(x, y_0aoa, 1)
-    
-    print(m,b)
-    
-    return m
-    
-
-
-def Torque(y):    
+def TorqueFunc(y):   #Return torque at a specific position of span 
     
     aoa_d #desired AoA
-    
-    #Calculate position of c.p. at pos y
-    
-    Xcp = [Xcp_0_frac, Xcp_10_frac]
-    points = [0, 10]
-    
-    a = (0, 5)
-    
-    result = sp.interpolate.griddata(points, Xcp, a, method='linear')
-    
-    
-    
-    print(result)
+    c_y = interpolation(y, span, chord)
+    cp_x_10 = interpolation(y, span, Xcp_10_frac )
+    cp_x_0 = interpolation(y, span, Xcp_0_frac )
+
+    #Calculate position of c.p. at span pos (y)
+    cp_x_alpha = (cp_x_10-cp_x_0)/np.radians(10)
+    cp_x = aoa_d * cp_x_alpha + cp_x_0
     
     #Import positon of centroid of wing
-    
-    #Calculate direction of normal force
-    
-    #Calculate PERPENDICULAR distance between normal force line of action(through c.p.) and centroid
-    
-    torque = ""
+    wingbox_centroid_pos_x, wingbox_centroid_pos_z  = wb_centroid(y)
+    wingbox_airfoil_centroid_x = (wingbox_centroid_pos_x/c_y)+0.2 #percentage of chord
+    d1 = cp_x - (wingbox_airfoil_centroid_x * c_y)#distance between cp x position and centroid x position    
+        
+    torque = Normalforce(y) * d1 #Normal force * distance
     return torque
 
-Torque(2)
+torque_array = []
+
+for i in np.arange(0, 13.916, .1):
+    span_array = np.append(span_array, i)
+    torque = TorqueFunc(i) #momentforce(i) gives negative values here so
+    torque_array = np.append(torque_array, torque)
+plt.plot(span_array, Moment_array, label = 'Torque along span (around y-axis) [N/m]')
+plt.legend()        #makes the labels visible
+plt.show()          #show all the 3 plots in one diagram 
