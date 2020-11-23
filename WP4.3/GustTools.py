@@ -110,3 +110,46 @@ def delta_n_s(t,V,W,h,U_ds,H,S,C_L_alpha,g,R,T_0,p_0):
     Lambda = (W*2)/(S*C_L_alpha*TempPresRho(h,g,R,T_0,p_0)[2]*V*g)
     delta_n_s = (U_ds/(2*g))*((omega*sin(omega*t))+((1/(1+(omega*Lambda)**-2))*((exp(-t/Lambda)/Lambda)-(cos(omega*t)/Lambda)-(omega*sin(omega*t)))))
     return delta_n_s
+
+def CalcMaxGust(c,S,C_L_alpha_M0,C_L_max_clean,V_C,Z_mo,MTOW,W_land_max,ZFW_max,g,Rho_0,p_0,T_0,gamma,R,h,W):
+
+    #V_B
+    Uref = U_ref1(h)
+    V = V_B(W,h,U_ref1(h),S,c,V_C,C_L_alpha_M0,C_L_max_clean,g,R,Rho_0,T_0,p_0)
+    C_L_alpha = C_L_alpha_M(V,h,C_L_alpha_M0,gamma,R,g,T_0,p_0)
+    H = H_max(c)
+    t = H_max(c)/V
+    Fg = F_g(Z_mo,MTOW,W_land_max,ZFW_max)
+    Uds = U_ds(Uref,Fg,H)
+    dn = delta_n_s(t,V,W,h,Uds,H,S,C_L_alpha,g,R,T_0,p_0)
+
+    B = 1+dn
+    G = 1-dn
+
+    #V_C
+    Uref = U_ref1(h)
+    V = V_C
+    C_L_alpha = C_L_alpha_M(V,h,C_L_alpha_M0,gamma,R,g,T_0,p_0)
+    H = H_max(c)
+    t = H_max(c)/V
+    Fg = F_g(Z_mo, MTOW, W_land_max, ZFW_max)
+    Uds = U_ds(Uref,Fg,H)
+    dn = delta_n_s(t,V,W,h,Uds,H,S,C_L_alpha,g,R,T_0,p_0)
+
+    C = 1+dn
+    F = 1-dn
+
+    #V_D
+    Uref = U_ref2(h)
+    V = V_D(h,g,R,gamma,T_0,p_0)
+    C_L_alpha = C_L_alpha_M(V,h,C_L_alpha_M0,gamma,R,g,T_0,p_0)
+    H = H_max(c)
+    t = H_max(c)/V
+    Fg = F_g(Z_mo, MTOW, W_land_max, ZFW_max)
+    Uds = U_ds(Uref,Fg,H)
+    dn = delta_n_s(t,V,W,h,Uds,H,S,C_L_alpha,g,R,T_0,p_0)
+
+    D = 1+dn
+    E = 1-dn
+
+    return(B,G,C,F,D,E)

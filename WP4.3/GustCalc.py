@@ -19,50 +19,6 @@ T_0 = 288.15            #sea level temperature [K]
 gamma = 1.4             #specific heat ratios of air [-]
 R = 287.05              #air specific gas constant [J/Kg K]
 
-#MaxGust
-def CalcMaxGust(c,S,C_L_alpha_M0,C_L_max_clean,V_C,Z_mo,MTOW,W_land_max,ZFW_max,g,Rho_0,p_0,T_0,gamma,R,h,W):
-
-    #V_B
-    Uref = U_ref1(h)
-    V = V_B(W,h,U_ref1(h),S,c,V_C,C_L_alpha_M0,C_L_max_clean,g,R,Rho_0,T_0,p_0)
-    C_L_alpha = C_L_alpha_M(V,h,C_L_alpha_M0,gamma,R,g,T_0,p_0)
-    H = H_max(c)
-    t = H_max(c)/V
-    Fg = F_g(Z_mo,MTOW,W_land_max,ZFW_max)
-    Uds = U_ds(Uref,Fg,H)
-    dn = delta_n_s(t,V,W,h,Uds,H,S,C_L_alpha,g,R,T_0,p_0)
-
-    B = 1+dn
-    G = 1-dn
-
-    #V_C
-    Uref = U_ref1(h)
-    V = V_C
-    C_L_alpha = C_L_alpha_M(V,h,C_L_alpha_M0,gamma,R,g,T_0,p_0)
-    H = H_max(c)
-    t = H_max(c)/V
-    Fg = F_g(Z_mo, MTOW, W_land_max, ZFW_max)
-    Uds = U_ds(Uref,Fg,H)
-    dn = delta_n_s(t,V,W,h,Uds,H,S,C_L_alpha,g,R,T_0,p_0)
-
-    C = 1+dn
-    F = 1-dn
-
-    #V_D
-    Uref = U_ref2(h)
-    V = V_D(h,g,R,gamma,T_0,p_0)
-    C_L_alpha = C_L_alpha_M(V,h,C_L_alpha_M0,gamma,R,g,T_0,p_0)
-    H = H_max(c)
-    t = H_max(c)/V
-    Fg = F_g(Z_mo, MTOW, W_land_max, ZFW_max)
-    Uds = U_ds(Uref,Fg,H)
-    dn = delta_n_s(t,V,W,h,Uds,H,S,C_L_alpha,g,R,T_0,p_0)
-
-    D = 1+dn
-    E = 1-dn
-
-    return(B,G,C,F,D,E)
-
 #Print Results
 def Print_Results(W,h,g,R,T_0,p_0,V_B,V_C,V_D,B,G,C,F,D,E):
     file = open("results.csv","a")

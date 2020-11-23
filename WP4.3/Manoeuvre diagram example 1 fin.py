@@ -1,7 +1,7 @@
 # importing the required module
 import matplotlib.pyplot as plt
 from math import *
-from GustTools import TempPresRho
+from GustTools import *
 
 # naming the x axis
 plt.xlabel('V')
@@ -13,10 +13,16 @@ plt.title('Manuovering; MTOW & Alt')
 
 # constants
 S=78.906
+c=2.834797715
 C_lmaxclean=1.514
 C_lmax=2.154
+C_L_alpha_M0=5.2
 n_min=-1
 MTOW = 262631.8937
+OEW = 122347.7654
+W_land_max = 144928.7383
+ZFW_max = 147482.2094
+Z_mo = 13106.4
 rho0 = 1.2252
 T0 = 273.15 + 15
 P0 = 101325
@@ -28,6 +34,9 @@ M = 0.0289644
 gamma = 1.4
 V_C_TAS = 250.80782
 
+
+
+#Replaced these, they don't seem to be working properly
 # def T(hm):
 #     if hm<11000:
 #         return T0 + lr*hm
@@ -83,6 +92,9 @@ def TAS(V_eas, rho):
 def EAS(V_tas, rho):
     return V_tas * sqrt(rho/rho0)
 
+def get_n_max(W):
+    return (max(2.5,(min(3.8,(2.1+(24000/((0.224809*W/g)+10000)))))))
+
 def f(x):
     # return round(((x/50.22)**2.), 4)
     return round(((x/V_s0_eas)**2.), 4)
@@ -94,27 +106,27 @@ def h(x):
 def l(x):
     return -(x/V_F_n1_eas)**2
 
-def m(x):
-    return (x/(V_D_EAS-V_C_EAS)) + (-1-(V_C_EAS/(V_D_EAS-V_C_EAS)))
+# def m(x):                     #straight line, integrated into plt call
+#     return (x/(V_D_EAS-V_C_EAS)) + (-1-(V_C_EAS/(V_D_EAS-V_C_EAS)))
 
-def n(y):
-    return 122.5763
+# def n(y):                     #this doesn't seem to do anything
+#     return 122.5763
+
+
 
 # set variables
-hm = 13106.4 #height considered
-n_max = 3.598
+hm = 13106.4        #height considered
+W = MTOW            #weight considered
 
+n_max = get_n_max(W)
 P = TempPresRho(hm, g, R, T0, P0)[1]
 T = TempPresRho(hm, g, R, T0, P0)[0]
 rho = TempPresRho(hm, g, R, T0, P0)[2]
 a = a(T)
-print(f"a = {a}")
 mach = mach(a)
-print(f"mach = {mach}")
 V_C_EAS = EAS(V_C_TAS, rho)
-print(V_C_EAS)
 V_D_EAS = EAS(V_D_tas(mach, a), rho)
-print(V_D_EAS)
+V_B_EAS = EAS(V_B(W,hm,U_ref1(hm),S,c,V_C_TAS,C_L_alpha_M0,C_lmaxclean,g,R,rho0,T0,P0), rho)
 V_s1_tas = V_s1_tas(rho)
 V_s1_eas = V_s1_eas(V_s1_tas, rho)
 V_s0_tas = V_s0_tas(rho)
@@ -126,53 +138,70 @@ V_F_n2_eas = V_s0_eas * sqrt(2)
 V_A_eas = EAS(V_A_tas(n_max, V_s1_tas), rho)
 V_A_n2_eas = V_s1_eas * sqrt(2)
 
+gust_points = CalcMaxGust(c,S,C_L_alpha_M0,C_lmaxclean,V_C_TAS,Z_mo,MTOW,W_land_max,ZFW_max,g,rho0,P0,T0,gamma,R,hm,W)
+
+#Plotting
 #Flaps down maximum
 xg =[V_F_n2_eas, V_A_n2_eas]
 yg = [2, 2]
-plt.plot(xg, yg)
+plt.plot(xg, yg, 'm')
 
 #Flaps down lift limited
-xf = range(72)
+xf = list(range(int(V_F_n2_eas)))
+xf.append(V_F_n2_eas)
 yf = []
 for n in xf:
     yf.append(f(n))
-plt.plot(xf, yf)
+plt.plot(xf, yf, 'm')
 
 #Flaps up lift limited
-xh = range(int(V_A_eas)+1)
+xh = list(range(int(V_A_eas)))
+xh.append(V_A_eas)
 yh = []
 for n in xh:
     yh.append(h(n))
-plt.plot(xh, yh)
+plt.plot(xh, yh, 'b')
 
 #Flaps up maximum
 xi = [V_A_eas, V_D_EAS]
 yi = [3.59, 3.59]
-plt.plot (xi, yi)
+plt.plot (xi, yi, 'b')
 
 #V_D limit
 xz = [V_D_EAS, V_D_EAS]
 yz = [0, 3.59]
-plt.plot(xz, yz)
+plt.plot(xz, yz, 'b')
 
 #Negative V_C to V_D
 xm = [V_C_EAS, V_D_EAS]
-ym = []
-for n in xm:
-    ym.append(m(n))
-plt.plot(xm, ym)
+ym = [-1, 0]
+plt.plot(xm, ym, 'b')
 
 #Negative maximum
 xj = [V_F_n1_eas, V_C_EAS]
 yj = [-1, -1]
-plt.plot(xj, yj)
+plt.plot(xj, yj, 'b')
 
 #Negative lift limited
-xl = range(int(V_F_n1_eas)+1)
+xl = list(range(int(V_F_n1_eas)))
+xl.append(V_F_n1_eas)
 yl = []
 for n in xl:
     yl.append(l(n))
-plt.plot(xl, yl)
+plt.plot(xl, yl, 'b')
+
+#top
+x_gust_top = [0,V_B_EAS,V_C_EAS,V_D_EAS]
+y_gust_top = [1,gust_points[0],gust_points[2],gust_points[4]]
+plt.plot(x_gust_top, y_gust_top, 'r')
+
+x_gust_bot = [0,V_B_EAS,V_C_EAS,V_D_EAS]
+y_gust_bot = [1,gust_points[1],gust_points[3],gust_points[5]]
+plt.plot(x_gust_bot, y_gust_bot, 'r')
+
+
+#horizontal axis line
+plt.axhline(color="black")
 
 # function to show the plot
 plt.show()
