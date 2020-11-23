@@ -16,6 +16,8 @@ CL_0_dist   = filereader("MainWing_a0.00_v10.00ms.txt")[3]
 CL_10_dist  = filereader("MainWing_a10.00_v10.00ms.txt")[3]
 Cdi_0_dist  = filereader("MainWing_a0.00_v10.00ms.txt")[4] 
 Cdi_10_dist = filereader("MainWing_a10.00_v10.00ms.txt")[4]
+Cm_0        = filereader("MainWing_a0.00_v10.00ms.txt")[5]
+Cm_10       = filereader("MainWing_a10.00_v10.00ms.txt")[5]    
 Xcp_0_frac  = filereader("MainWing_a0.00_v10.00ms.txt")[7]
 Xcp_10_frac = filereader("MainWing_a10.00_v10.00ms.txt")[7]
 
