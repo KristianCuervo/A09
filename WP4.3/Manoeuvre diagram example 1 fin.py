@@ -195,10 +195,23 @@ x_gust_top = [0,V_B_EAS,V_C_EAS,V_D_EAS]
 y_gust_top = [1,gust_points[0],gust_points[2],gust_points[4]]
 plt.plot(x_gust_top, y_gust_top, 'r')
 
+#bot
 x_gust_bot = [0,V_B_EAS,V_C_EAS,V_D_EAS]
 y_gust_bot = [1,gust_points[1],gust_points[3],gust_points[5]]
 plt.plot(x_gust_bot, y_gust_bot, 'r')
 
+#V_S0
+x_V_s0 = [V_s0_eas, V_s0_eas]
+y_V_s0 = [0, 1]
+plt.plot(x_V_s0,y_V_s0,'k--')
+#V_A
+x_V_A = [V_A_eas, V_A_eas]
+y_V_A = [0, n_max]
+plt.plot(x_V_A,y_V_A,'k--')
+#V_C
+x_V_C = [V_C_EAS, V_C_EAS]
+y_V_C = [0, n_max]
+plt.plot(x_V_C,y_V_C,'k--')
 
 #horizontal axis line
 plt.axhline(color="black")
