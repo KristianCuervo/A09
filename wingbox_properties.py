@@ -45,6 +45,8 @@ root_bottom_panel = (root_l ** 2 + te_z_root_h ** 2) ** 0.5
 tip_top_panel = (tip_l ** 2 + ((tip_te_h + te_z_tip_h)- tip_le_h) ** 2) ** 0.5
 tip_bottom_panel = (tip_l ** 2 + te_z_tip_h ** 2) ** 0.5
 
+rho = 2782 #kg/m^3
+A_str = 120/(10**6) #m^2
 
 def wb_area(b): #Calculates enclosed are of wingbox at a span location b in mm
     
@@ -174,26 +176,6 @@ def J(b, t1, t2): #calculate J using formula for thin walled structures
     J_t = 4*A^2/C
     return J_t
 
-def I_xx_str(b, nstr_top, nstr_bot, area_str): #calculate I of stringers around x axis through centroid of wb
-     if b > (wingspan/2):
-        print("Wingspan to calculate stringer Moment of interta too high");
-        sys.exit();
-     if b < 0:
-        print("Wingspan to calculate stringer Moment of interta less than 0");
-        sys.exit();     
-    
-     dist_bot = wb_centroid(b)[1] - (bottompanel_dz(b)/2)
-     dist_top = wb_front_spar_h(b) - wb_centroid(b)[1] + ((bottompanel_dz(b) + wb_rear_spar_h(b) - wb_front_spar_h(b))/2)
-     
-     str_dist_bot = dist_bot - (area_str ** 0.5)/2
-     str_dist_top = dist_top - (area_str ** 0.5)/2
-     
-     I_xx_str = nstr_bot * area_str * str_dist_bot ** 2 + nstr_top * area_str * str_dist_top ** 2
-
-     return I_xx_str
-
-
-
 def I_xx(b, t1, t2): #calculate moment of inertia assume thin walled and spar as point area
     if b > (wingspan/2):
         print("Wingspan to calculate wingarea was too high");
@@ -240,12 +222,46 @@ S1 = sp.interpolate.interp1d(section,section_top_str,kind="previous",fill_value=
 S2 = sp.interpolate.interp1d(section, section_bot_str, kind="previous", fill_value="extrapolate")
 
 string_inertias = []
-for i in spanlist:
-    string_inertias.append(I_xx_str(i, S1(i), S2(i), 1.2/10000))
+#for i in spanlist:
+    #string_inertias.append(I_xx_str(i, S1(i), S2(i), 1.2/10000))
+
+def nstringer(b):
+    if b > (wingspan/2):
+        print("Wingspan to calculate wingarea was too high");
+        sys.exit();
+    if b < 0:
+        print("Wingspan to calculate wingarea was less than 0");
+        sys.exit();
+
+    n_top = float(S1(b))
+    n_bottom =  float(S2(b))
+    return n_top, n_bottom
+
+def I_xx_str(b, area_str): #calculate I of stringers around x axis through centroid of wb
+    if b > (wingspan/2):
+        print("Wingspan to calculate stringer Moment of interta too high");
+        sys.exit();
+    if b < 0:
+        print("Wingspan to calculate stringer Moment of interta less than 0");
+        sys.exit();     
+    nstr_top, nstr_bot = nstringer(b)
+    
+    dist_bot = wb_centroid(b)[1] - (bottompanel_dz(b)/2)
+    dist_top = wb_front_spar_h(b) - wb_centroid(b)[1] + ((bottompanel_dz(b) + wb_rear_spar_h(b) - wb_front_spar_h(b))/2)
+     
+    str_dist_bot = dist_bot - (area_str ** 0.5)/2
+    str_dist_top = dist_top - (area_str ** 0.5)/2
+     
+    I_xx_str = nstr_bot * area_str * str_dist_bot ** 2 + nstr_top * area_str * str_dist_top ** 2
+
+    return I_xx_str    
 
 
-total_inertia = []
-for i in range(10):
-    total_inertia.append(span_inertias[i] + string_inertias[i])
 
-print(total_inertia)
+def mass(b,t1,t2, n):
+    A = (wb_top_panel(b) + wb_bottom_panel(b))*t2 + (wb_front_spar_h(b) + wb_rear_spar_h(b))*t1
+    nstr_top, nstr_bot = nstringer(b)
+    A_tot_str = A_str * (nstr_bot+nstr_top)
+
+
+print(I_xx_str(7.8, A_str), nstringer(7.8), S1(7.8), S2(7.8))
