@@ -2,6 +2,8 @@ import scipy as sp
 from scipy import interpolate, integrate
 import numpy as np
 import matplotlib.pyplot as plt
+from NormalShearMomentDiagrams import Momentforce
+from wingbox_properties import I_xx, I_xx_str
 
 
 # # # # # # # DEFLECTION # # # # # # # # 
@@ -20,8 +22,8 @@ M = sp.interpolate.interp1d(M1,M2,kind="linear",fill_value="extrapolate")     # 
 
 I1 = [0,5,10]     # y location
 I2 = [1,1,1]     # value
-
-I = sp.interpolate.interp1d(I1,I2,kind="previous",fill_value="extrapolate")     # makes a function of I1 and I2
+def I(c):
+    return I_xx(c) + I_xx_str(c) # makes a function of I1 and I2
 
 
 # constants
@@ -33,7 +35,7 @@ v_max = 0.15*b
 
 def f(y):       # right-hand side of formula
     E = 10
-    return M(y) / (I(y)*E)
+    return Momentforce(y) / (I(y)*E)
 
 def dvdy(y):    # left-hand side of formula
     a,b = sp.integrate.quad(f, 0, y)
