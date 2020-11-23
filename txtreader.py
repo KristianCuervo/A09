@@ -9,6 +9,7 @@ def filereader(filename):
     Cl = []
     ICd = []
     Cm = []
+    Xp = []
 
     f = open(filename, 'r')
     for lines in f.readlines():
@@ -34,13 +35,13 @@ def filereader(filename):
             Cl.append(float(words[3]))
             ICd.append(float(words[5]))
             Cm.append(float(words[7]))
+            Xp.append(float(words[10]))
     y_array = np.array(ylst)
     chord_array = np.array(chord)
     Ai_array = np.array(Ai)
     Cl_array = np.array(Cl)
     ICd_array = np.array(ICd)
     Cm_array = np.array(Cm)
+    Xp_array = np.array(Xp)
     f.close()
-    return(y_array,chord_array,Ai_array,Cl_array,ICd_array,Cm_array,CL)
-
-
+    return(y_array,chord_array,Ai_array,Cl_array,ICd_array,Cm_array,CL,Xp_array)

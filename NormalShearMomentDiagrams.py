@@ -15,6 +15,8 @@ CL_0_dist   = filereader("MainWing_a0.00_v10.00ms.txt")[3]
 CL_10_dist  = filereader("MainWing_a10.00_v10.00ms.txt")[3]
 Cdi_0_dist  = filereader("MainWing_a0.00_v10.00ms.txt")[4] 
 Cdi_10_dist = filereader("MainWing_a10.00_v10.00ms.txt")[4]
+Xcp_0_frac  = filereader("MainWing_a0.00_v10.00ms.txt")[7]
+Xcp_10_frac = filereader("MainWing_a10.00_v10.00ms.txt")[7]
 
 CL_0   = 0.2688          # total CL at aoa =  0 deg from XFLR5 file
 CL_10  = 1.03017         # total CL at aoa = 10 deg from XFLR5 file
@@ -37,6 +39,9 @@ n       = 1.5                     #load factor found from wp4.3
 ############ OUTPUTS
 
 ######################################### LIFT AND AOA
+
+
+
 CL_desired = CL_d = 2*n*W/(rho*V**2*S)
 print('\ndesired CL', round(CL_d, 4))
 
@@ -127,3 +132,47 @@ for i in np.arange(0, 13.916, .1):
 plt.plot(span_array, Moment_array, label = 'Moment along span [N/m]')
 plt.legend()        #makes the labels visible
 plt.show()          #show all the 3 plots in one diagram
+
+
+
+############## TORQUE DIAGRAM
+
+def X_cp(y): #Returns distance from root LE to c.p. at a span pos, y, in the x direction
+    x = span 
+    y_0aoa = Xcp_0_frac
+    
+    m, b = np.polyfit(x, y_0aoa, 1)
+    
+    print(m,b)
+    
+    return m
+    
+
+
+def Torque(y):    
+    
+    aoa_d #desired AoA
+    
+    #Calculate position of c.p. at pos y
+    
+    Xcp = [Xcp_0_frac, Xcp_10_frac]
+    points = [0, 10]
+    
+    a = (0, 5)
+    
+    result = sp.interpolate.griddata(points, Xcp, a, method='linear')
+    
+    
+    
+    print(result)
+    
+    #Import positon of centroid of wing
+    
+    #Calculate direction of normal force
+    
+    #Calculate PERPENDICULAR distance between normal force line of action(through c.p.) and centroid
+    
+    torque = ""
+    return torque
+
+Torque(2)
