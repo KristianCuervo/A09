@@ -136,6 +136,56 @@ plt.plot(span_array, Moment_array, label = 'Moment along span [N/m]')
 plt.legend()        #makes the labels visible
 plt.show()          #show all the 3 plots in one diagram """
 
+######################## REPEAT CALCULATIONS BUT WITH FUEL
+
+
+######## NORMAL
+def Normalforce1(y):         #Normal force dependent on span-position
+    Normal = L_accent(y)*np.cos(aoa_d) - Di_accent(y)*np.sin(aoa_d) - weight(y) - weight_f(y)
+    return Normal
+
+totalnormal1 = sp.integrate.quad(Normalforce1, 0, 13.916)[0]
+print('total Normal', totalnormal1) #Total normal force which becomes negative internal shear at root
+
+def Shearforce1(y):
+    Shear = -totalnormal1 + sp.integrate.quad(Normalforce1, 0, y)[0]   #above calculated totalnormal is subtracted at the root
+    return Shear
+
+span_array = np.array([])      #create empty arrays to store data
+normal1_array = np.array([])
+for i in np.arange(0, 13.916, .1):
+    span_array = np.append(span_array, i)
+    normal = Normalforce1(i)       
+    normal_array1 = np.append(normal1_array, normal)
+plt.plot(span_array, normal1_array, label = 'NormalForce along span [N]')   
+
+########## SHEAR        same procedure as above
+span_array  = np.array([])
+shear1_array = np.array([])
+for i in np.arange(0, 13.916, .1):
+    span_array = np.append(span_array, i)       
+    shear1_array = np.append(shear1_array, Shearforce1(i))
+
+plt.plot(span_array, shear1_array, label = 'ShearForce along span [N]')
+
+######## Moment
+
+def Momentforce1(y):
+    Moment = sp.integrate.quad(Shearforce1, 0, y)[0]
+    return Moment
+
+totalmoment1 = -Momentforce1(13.196)          #gives negative value while the bending moment at the root must be positive -> minus sign
+print('total moment at root', totalmoment)
+Moment1_array = np.array([])
+span_array = np.array([])
+
+for i in np.arange(0, 13.916, .1):
+    span_array = np.append(span_array, i)
+    moment = totalmoment1 + Momentforce1(i)       #momentforce(i) gives negative values here so
+    Moment1_array = np.append(Moment1_array, moment)
+plt.plot(span_array, Moment1_array, label = 'Moment along span [N/m]')
+plt.legend()        #makes the labels visible
+plt.show()          #show all the 3 plots in one diagram
 
 
 ############## TORQUE DIAGRAM
