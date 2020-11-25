@@ -258,10 +258,32 @@ def I_xx_str(b, area_str): #calculate I of stringers around x axis through centr
 
 
 
-def mass(b,t1,t2, n):
-    A = (wb_top_panel(b) + wb_bottom_panel(b))*t2 + (wb_front_spar_h(b) + wb_rear_spar_h(b))*t1
-    nstr_top, nstr_bot = nstringer(b)
-    A_tot_str = A_str * (nstr_bot+nstr_top)
+def weight(b):
+    if b > (wingspan/2):
+        print("Wingspan to calculate weight too high");
+        sys.exit();
+    if b < 0:
+        print("Wingspan to calculate stringer weight less than 0");
+        sys.exit();  
+    c = m1/wingspan 
+    m = c*wb_area(b)
+    w = 9.80665*m
+    return w
+
+def weight_f(b):
+    if b > (wingspan/2):
+        print("Wingspan to calculate stringer weight too high");
+        sys.exit();
+    if b < 0:
+        print("Wingspan to calculate stringer weightless than 0");
+        sys.exit();  
+    if b > (wingspan/2*0.75):
+        w = 0
+    else: 
+        c = (m2+m1)/(wingspan*0.75)
+        m = c*wb_area(b)
+        w = 9.80665*m
+    return w
 
 
 print(I_xx_str(7.8, A_str), nstringer(7.8), S1(7.8), S2(7.8))
