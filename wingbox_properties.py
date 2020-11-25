@@ -261,21 +261,26 @@ def I_xx_str(b, area_str): #calculate I of stringers around x axis through centr
 
 
 
+def S(b):
+    S = 2*((0.5*root_l-0.5*tip_l)/(wingspan/2) * b + 0.5*tip_l*wingspan/2)
+    return 2*S
+
 def weight(b):
     if b > (wingspan/2):
         print("Wingspan to calculate weight too high");
         sys.exit();
     if b < 0:
-        print("Wingspan to calculate stringer weight less than 0");
+        print("Wingspan to calculate  weight less than 0");
         sys.exit();  
-    c = m1/wingspan 
-    m = c*wb_area(b)
+    C = (m1/2) / S(wingspan/2)
+    m = S(b)* C
+    
     w = 9.80665*m
     return w
 
 def weight_f(b):
     if b > (wingspan/2):
-        print("Wingspan to calculate stringer weight too high");
+        print("Wingspan to calculate fuel weight too high");
         sys.exit();
     if b < 0:
         print("Wingspan to calculate stringer weightless than 0");
@@ -283,8 +288,9 @@ def weight_f(b):
     if b > (wingspan/2*0.75):
         w = 0
     else: 
-        c = (m2)/(wingspan*0.75)
-        m = c*wb_area(b)
+        C = ((m2)/2) / S(wingspan/2*0.75)
+        m = S(b)* C
+    
         w = 9.80665*m
     return w
 
