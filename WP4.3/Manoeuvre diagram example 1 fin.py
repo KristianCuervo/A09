@@ -110,9 +110,9 @@ def d_n(t):
 
 # set variables
 #height considered
-hm = 0
+hm = 13106.4
 #weight considered
-W = OEW
+W = MTOW
 
 n_max = get_n_max(W)
 P = TempPresRho(hm, g, R, T0, P0)[1]
@@ -147,7 +147,7 @@ plt.xlabel('V')
 plt.ylabel('n')
 
 # giving a title to my graph
-plt.title('Load Diagram; OEW & Sea-Level Altitude')
+plt.title('Load Diagram; MTOW & Cruise Altitude')
 
 #Flaps down maximum
 xg =[V_F_n2_eas, V_A_n2_eas]
@@ -223,7 +223,7 @@ y_V_A = [0, n_max]
 plt.plot(x_V_A,y_V_A,'k--')
 #V_C
 x_V_C = [V_C_EAS, V_C_EAS]
-y_V_C = [0, min(n_max,h(V_C_EAS))]
+y_V_C = [min(-1,gust_points[3]), max(gust_points[2],min(n_max,h(V_C_EAS)))]
 plt.plot(x_V_C,y_V_C,'k--')
 
 #horizontal axis line
@@ -231,6 +231,15 @@ plt.axhline(color="black")
 
 #Plotting Gust Variation
 plt.figure()
+# naming the x axis
+plt.xlabel('t (s)')
+# naming the y axis
+plt.ylabel('n')
+
+# giving a title to my graph
+plt.title('Gust Load Variation over Time; OEW & Sea-Level Altitude')
+
+# plotting gust load
 t_gust_arr = np.linspace(0,t_max,100)
 n_gust_arr = np.zeros(len(t_gust_arr))
 for n in range(len(t_gust_arr)):
@@ -238,6 +247,9 @@ for n in range(len(t_gust_arr)):
 t_gust = t_gust_arr.tolist()
 n_gust = n_gust_arr.tolist()
 plt.plot(t_gust, n_gust)
+
+#horizontal axis line
+plt.axhline(color="black")
 
 # function to show the plot
 plt.show()
