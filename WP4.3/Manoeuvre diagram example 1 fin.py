@@ -239,8 +239,5 @@ t_gust = t_gust_arr.tolist()
 n_gust = n_gust_arr.tolist()
 plt.plot(t_gust, n_gust)
 
-print(U_ds)
-print(d_n(t_max))
-
 # function to show the plot
 plt.show()
