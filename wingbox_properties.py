@@ -283,7 +283,7 @@ def weight_f(b):
     if b > (wingspan/2*0.75):
         w = 0
     else: 
-        c = (m2+m1)/(wingspan*0.75)
+        c = (m2)/(wingspan*0.75)
         m = c*wb_area(b)
         w = 9.80665*m
     return w
