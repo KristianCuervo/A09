@@ -53,6 +53,33 @@ for i in v_list:
 
 print("total deflection equals: ", v_values[-1])
 
+#######SAME BUT WITH FUEL
+
+
+def f1(y):       # right-hand side of formula
+    E = 10
+    return Momentforce1(y) / (I(y)*E)
+
+def dvdy1(y):    # left-hand side of formula
+    a,b = sp.integrate.quad(f1, 0, y)
+    return -1*a
+
+def v1(y):       # integral of dvdy
+    v_spef,err = sp.integrate.quad(dvdy1, 0, y)
+    return v_spef
+
+v1_list = np.arange(0, b, 0.1)    # deflection as function of y (steps of 1)
+v1_values = []
+
+for i in v1_list:
+    v1_values.append(v1(i))
+
+print("total deflection equals: ", v1_values[-1]) 
+### MOST CRITICAL CASE
+
+print("most critical case deflection is:", max(v_values[-1], v1_values[-1]))
+
+
 
 
 
