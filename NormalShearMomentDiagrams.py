@@ -90,14 +90,14 @@ def Di_accent(y):  #y is location that we're interested in, Cdi_d_dist is desire
 
 ######## NORMAL
 def Normalforce(y):         #Normal force dependent on span-position
-    Normal = L_accent(y)*np.cos(aoa_d)+Di_accent(y)*np.sin(aoa_d) + weight(y)
+    Normal = L_accent(y)*np.cos(aoa_d)+Di_accent(y)*np.sin(aoa_d) 
     return Normal
 
-totalnormal = sp.integrate.quad(Normalforce, 0, 13.916)[0]
+totalnormal = sp.integrate.quad(Normalforce, 0, 13.916)[0] - weight(13.9)
 print('total Normal', totalnormal) #Total normal force which becomes negative internal shear at root
 
 def Shearforce(y):
-    Shear = -totalnormal + sp.integrate.quad(Normalforce, 0, y)[0]   #above calculated totalnormal is subtracted at the root
+    Shear = -totalnormal + sp.integrate.quad(Normalforce, 0, y)[0] - weight(y)   #above calculated totalnormal is subtracted at the root
     return Shear
 
 span1_array = np.array([])      #create empty arrays to store data
@@ -144,11 +144,11 @@ def Normalforce1(y):         #Normal force dependent on span-position
     Normal = L_accent(y)*np.cos(aoa_d) - Di_accent(y)*np.sin(aoa_d) - weight(y) - weight_f(y)
     return Normal
 
-totalnormal1 = sp.integrate.quad(Normalforce1, 0, 13.916)[0]
+totalnormal1 = sp.integrate.quad(Normalforce1, 0, 13.916)[0]  - weight(13.916) - weight_f(13.916)
 print('total Normal', totalnormal1) #Total normal force which becomes negative internal shear at root
 
 def Shearforce1(y):
-    Shear = -totalnormal1 + sp.integrate.quad(Normalforce1, 0, y)[0]   #above calculated totalnormal is subtracted at the root
+    Shear = -totalnormal1 + sp.integrate.quad(Normalforce1, 0, y)[0]   - weight(y) - weight_f(y) #above calculated totalnormal is subtracted at the root
     return Shear
 
 span_array = np.array([])      #create empty arrays to store data
