@@ -108,8 +108,22 @@ def delta_n_s(t,V,W,h,U_ds,H,S,C_L_alpha,g,R,T_0,p_0):
 
     omega = pi*V/H
     Lambda = (W*2)/(S*C_L_alpha*TempPresRho(h,g,R,T_0,p_0)[2]*V*g)
-    delta_n_s = (U_ds/(2*g))*((omega*sin(omega*t))+((1/(1+(omega*Lambda)**-2))*((exp(-t/Lambda)/Lambda)-(cos(omega*t)/Lambda)-(omega*sin(omega*t)))))
+    delta_n_s = (U_ds/(2*g))*((omega*sin(omega*t))+((1/(1+((omega*Lambda)**-2)))*(((exp(-t/Lambda))/Lambda)-((cos(omega*t))/Lambda)-(omega*sin(omega*t)))))
     return delta_n_s
+
+def delta_n_s_max(h, V, U_ds, H, W, S, C_L_alpha, g, R, T_0, p_0):
+    from math import pi
+    from math import exp
+    from math import sin
+    t = 0
+    diff = 0.01
+    omg = pi * V / H
+    lmd = (2*W)/(S*C_L_alpha*TempPresRho(h,g,R,T_0,p_0)[2]*V*g)
+    while abs(diff) >= 0.01:
+        t += 0.001
+        diff = lmd + exp(t/lmd)*sin(omg*t)
+    return delta_n_s(t,V,W,h,U_ds,H,S,C_L_alpha,g,R,T_0,p_0)
+
 
 def CalcMaxGust(c,S,C_L_alpha_M0,C_L_max_clean,V_C,Z_mo,MTOW,W_land_max,ZFW_max,g,Rho_0,p_0,T_0,gamma,R,h,W):
 

@@ -1,15 +1,8 @@
 # importing the required module
 import matplotlib.pyplot as plt
+import numpy as np
 from math import *
 from GustTools import *
-
-# naming the x axis
-plt.xlabel('V')
-# naming the y axis
-plt.ylabel('n')
-
-# giving a title to my graph
-plt.title('Load Diagram; OEW & Sea-Level Altitude')
 
 # constants
 S=78.906
@@ -112,6 +105,8 @@ def l(x):
 # def n(y):                     #this doesn't seem to do anything
 #     return 122.5763
 
+def d_n(t):
+    return delta_n_s(t,V_C_TAS,W,hm,U_ds,H,S,C_L_alpha,g,R,T0,P0)
 
 # set variables
 #height considered
@@ -139,8 +134,21 @@ V_F_n2_eas = V_s0_eas * sqrt(2)
 V_A_eas = EAS(V_A_tas(n_max, V_s1_tas), rho)
 V_A_n2_eas = V_s1_eas * sqrt(2)
 gust_points = CalcMaxGust(c,S,C_L_alpha_M0,C_lmaxclean,V_C_TAS,Z_mo,MTOW,W_land_max,ZFW_max,g,rho0,P0,T0,gamma,R,hm,W)
+H = H_max(c)
+C_L_alpha = C_L_alpha_M(V_C_TAS,hm,C_L_alpha_M0,gamma,R,g,T0,P0)
+t_max = (2*H)/V_C_TAS
+U_ds = U_ds(U_ref1(hm), F_g(Z_mo, MTOW, W_land_max, ZFW_max), H)
 
-#Plotting
+#Plotting Load Diagram
+plt.figure()
+# naming the x axis
+plt.xlabel('V')
+# naming the y axis
+plt.ylabel('n')
+
+# giving a title to my graph
+plt.title('Load Diagram; OEW & Sea-Level Altitude')
+
 #Flaps down maximum
 xg =[V_F_n2_eas, V_A_n2_eas]
 yg = [2, 2]
@@ -220,6 +228,19 @@ plt.plot(x_V_C,y_V_C,'k--')
 
 #horizontal axis line
 plt.axhline(color="black")
+
+#Plotting Gust Variation
+plt.figure()
+t_gust_arr = np.linspace(0,t_max,100)
+n_gust_arr = np.zeros(len(t_gust_arr))
+for n in range(len(t_gust_arr)):
+    n_gust_arr[n] = (1+d_n(t_gust_arr[n]))
+t_gust = t_gust_arr.tolist()
+n_gust = n_gust_arr.tolist()
+plt.plot(t_gust, n_gust)
+
+print(U_ds)
+print(d_n(t_max))
 
 # function to show the plot
 plt.show()
