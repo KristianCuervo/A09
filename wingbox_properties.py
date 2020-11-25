@@ -20,6 +20,9 @@ tip_area = 0.5 * (tip_le_h+tip_te_h) * tip_l #area of winbox at tip
 dz_0 = 35.7/1000; #Shift of the TE spar at root of wingbox
 dz_1 = 10.3/1000; #Shif go the TE spar at tip of wingbox
 
+m1 = 3212.13 #kg
+m2 = 11742 #kg
+
 te_z_root_h = dz_0
 te_z_tip_h = dz_1
     
