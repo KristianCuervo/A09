@@ -3,7 +3,7 @@ import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
 from scipy import interpolate, integrate
-from wingbox_properties import wb_centroid
+from wingbox_properties import wb_centroid , weight
 
 def interpolation(x_coor, array_x, array_y):
     f = sp.interpolate.interp1d(array_x, array_y, kind = 'cubic', fill_value = 'extrapolate') 
@@ -90,7 +90,7 @@ def Di_accent(y):  #y is location that we're interested in, Cdi_d_dist is desire
 
 ######## NORMAL
 def Normalforce(y):         #Normal force dependent on span-position
-    Normal = L_accent(y)*np.cos(aoa_d)+Di_accent(y)*np.sin(aoa_d)
+    Normal = L_accent(y)*np.cos(aoa_d)+Di_accent(y)*np.sin(aoa_d) + weight(y)
     return Normal
 
 totalnormal = sp.integrate.quad(Normalforce, 0, 13.916)[0]
