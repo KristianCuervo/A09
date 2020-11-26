@@ -51,6 +51,8 @@ tip_bottom_panel = (tip_l ** 2 + te_z_tip_h ** 2) ** 0.5
 rho = 2782 #kg/m^3
 A_str = 120/(10**6) #m^2
 
+density_al = 2.7*1000 #kg/m^3
+
 def wb_area(b): #Calculates enclosed are of wingbox at a span location b in mm
     
     if b > (wingspan/2):
@@ -218,7 +220,7 @@ for i in spanlist:      # clean wing box
     span_inertias.append(I_xx(i, 0.01, 0.01))
 
 
-section = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+section = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 13.915]
 section_top_str = [3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 0, 0, 0, 0]
 section_bot_str = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0]
 S1 = sp.interpolate.interp1d(section,section_top_str,kind="previous",fill_value="extrapolate")
@@ -259,8 +261,6 @@ def I_xx_str(b, area_str): #calculate I of stringers around x axis through centr
 
     return I_xx_str    
 
-
-
 def S(b):
     S = 2*((0.5*root_l-0.5*tip_l)/(wingspan/2) * b + 0.5*tip_l*wingspan/2)
     return 2*S
@@ -294,5 +294,29 @@ def weight_f(b):
         w = 9.80665*m
     return w
 
+def wb_weight(t_spar, t_panel): #Calculates weight of entrie wingbox
+    #inputs: t_spar: tickness in m of spars (front and rear)
+            #t_panel: tickness in m of panels (top and bottom)
+    
+    a_front_spar = (wb_front_spar_h(0) + wb_front_spar_h(wingspan/2))*(wingspan/2)
+    vol_front_spar = a_front_spar * t_spar
+    
+    a_rear_spar = (wb_rear_spar_h(0) + wb_rear_spar_h(wingspan/2))*(wingspan/2)
+    vol_rear_spar = a_rear_spar * t_spar
+    
+    a_top_panel = (wb_top_panel(0) + wb_top_panel(wingspan/2))*(wingspan/2)
+    vol_top_panel = a_top_panel * t_panel
+    
+    a_bottom_panel = (wb_bottom_panel(0) + wb_bottom_panel(wingspan/2))*(wingspan/2)
+    vol_bottom_panel = a_bottom_panel * t_panel
+    
+    vol_stringers = 0
+    
+    for i in range(len(section)-1):        
+        vol_stringers += 2 * (section_top_str[i] * A_str + section_bot_str[i] * A_str) * (section[i+1]-section[i])
+    
+    w = (vol_front_spar + vol_rear_spar + vol_top_panel + vol_bottom_panel + vol_stringers) * density_al
+    
+    return w
 
-print(I_xx_str(7.8, A_str), nstringer(7.8), S1(7.8), S2(7.8))
+print(wb_weight(0.005,0.005))
