@@ -122,13 +122,12 @@ def delta_n_s_max(h, V, U_ds, H, W, S, C_L_alpha, g, R, T_0, p_0):
     return n_max
 
 
-def CalcMaxGust(c,S,C_L_alpha_M0,C_L_max_clean,V_C,Z_mo,MTOW,W_land_max,ZFW_max,g,Rho_0,p_0,T_0,gamma,R,h,W):
+def CalcMaxGust(c,S,C_L_alpha_M0,C_L_max_clean,V_C,Z_mo,MTOW,W_land_max,ZFW_max,g,Rho_0,p_0,T_0,gamma,R,h,W,H):
 
     #V_B
     Uref = U_ref1(h)
     V = V_B(W,h,U_ref1(h),S,c,V_C,C_L_alpha_M0,C_L_max_clean,g,R,Rho_0,T_0,p_0)
     C_L_alpha = C_L_alpha_M(V,h,C_L_alpha_M0,gamma,R,g,T_0,p_0)
-    H = H_max(c)
     Fg = F_g(Z_mo,MTOW,W_land_max,ZFW_max)
     Uds = U_ds(Uref,Fg,H)
     dn = delta_n_s_max(h, V, Uds, H, W, S, C_L_alpha, g, R, T_0, p_0)
@@ -140,7 +139,6 @@ def CalcMaxGust(c,S,C_L_alpha_M0,C_L_max_clean,V_C,Z_mo,MTOW,W_land_max,ZFW_max,
     Uref = U_ref1(h)
     V = V_C
     C_L_alpha = C_L_alpha_M(V,h,C_L_alpha_M0,gamma,R,g,T_0,p_0)
-    H = H_max(c)
     t = H_max(c)/V
     Fg = F_g(Z_mo, MTOW, W_land_max, ZFW_max)
     Uds = U_ds(Uref,Fg,H)
@@ -153,7 +151,6 @@ def CalcMaxGust(c,S,C_L_alpha_M0,C_L_max_clean,V_C,Z_mo,MTOW,W_land_max,ZFW_max,
     Uref = U_ref2(h)
     V = V_D(h,g,R,gamma,T_0,p_0)
     C_L_alpha = C_L_alpha_M(V,h,C_L_alpha_M0,gamma,R,g,T_0,p_0)
-    H = H_max(c)
     t = H_max(c)/V
     Fg = F_g(Z_mo, MTOW, W_land_max, ZFW_max)
     Uds = U_ds(Uref,Fg,H)

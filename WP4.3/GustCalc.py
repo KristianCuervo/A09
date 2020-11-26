@@ -20,9 +20,9 @@ gamma = 1.4             #specific heat ratios of air [-]
 R = 287.05              #air specific gas constant [J/Kg K]
 
 #Print Results
-def Print_Results(W,h,g,R,T_0,p_0,V_B,V_C,V_D,B,G,C,F,D,E):
+def Print_Results(W,h,H,g,R,T_0,p_0,V_B,V_C,V_D,B,G,C,F,D,E):
     file = open("results.csv","a")
-    text = f"{W:6.0f},{h:6.0f},{TempPresRho(h,g,R,T_0,p_0)[2]:6.3f},{V_B:6.2f},{V_C:6.2f},{V_D:6.2f},{B:6.3f},{G:6.3f},{C:6.3f},{F:6.3f},{D:6.3f},{E:6.3f}"
+    text = f"{W:6.0f},{h:6.0f},{H},{TempPresRho(h,g,R,T_0,p_0)[2]:6.3f},{V_B:6.2f},{V_C:6.2f},{V_D:6.2f},{B:6.3f},{G:6.3f},{C:6.3f},{F:6.3f},{D:6.3f},{E:6.3f}"
     file.write("\n" + text)
     print(text)
     file.close()
@@ -30,12 +30,14 @@ def Print_Results(W,h,g,R,T_0,p_0,V_B,V_C,V_D,B,G,C,F,D,E):
 #main
 hlist = np.loadtxt("input.csv",delimiter=",",skiprows=1,usecols=[0])
 Wlist = np.loadtxt("input.csv",delimiter=",",skiprows=1,usecols=[1])
+Hlist = np.loadtxt("input.csv",delimiter=",",skiprows=1,usecols=[2])
 
-print(f"W     ,h     ,Rho   ,V_B   ,B     ,G     ,V_C   ,C     ,F     ,V_D   ,D     ,E")
+print(f"W     ,h     ,H     ,Rho   ,V_B   ,B     ,G     ,V_C   ,C     ,F     ,V_D   ,D     ,E")
 for i in range(len(hlist)):
     h = hlist[i]
     W = Wlist[i]
+    H = Hlist[i]
 
-    Points = CalcMaxGust(c,S,C_L_alpha_M0,C_L_max_clean,V_C,Z_mo,MTOW,W_land_max,ZFW_max,g,Rho_0,p_0,T_0,gamma,R,h,W)
+    Points = CalcMaxGust(c,S,C_L_alpha_M0,C_L_max_clean,V_C,Z_mo,MTOW,W_land_max,ZFW_max,g,Rho_0,p_0,T_0,gamma,R,h,W,H)
     Velocities = [V_B(W,h,U_ref1(h),S,c,V_C,C_L_alpha_M0,C_L_max_clean,g,R,Rho_0,T_0,p_0),V_C,V_D(h,g,R,gamma,T_0,p_0)]
-    Print_Results(W,h,g,R,T_0,p_0,Velocities[0],Velocities[1],Velocities[2],Points[0],Points[1],Points[2],Points[3],Points[4],Points[5])
+    Print_Results(W,h,H,g,R,T_0,p_0,Velocities[0],Velocities[1],Velocities[2],Points[0],Points[1],Points[2],Points[3],Points[4],Points[5])
