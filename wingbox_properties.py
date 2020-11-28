@@ -282,17 +282,19 @@ def weight_f(b):
     if b > (wingspan/2):
         print("Wingspan to calculate fuel weight too high");
         sys.exit();
-    if b < 0:
+    if b < (wingspan/2*0.75):
         print("Wingspan to calculate stringer weightless than 0");
         sys.exit();  
-    if b > (wingspan/2*0.75):
-        w = 0
-    else: 
+        else: 
         C = ((m2)/2) / S(wingspan/2*0.75)
         m = S(b)* C
     
         w = 9.80665*m
+    else:
+        w = S(wingspan/2*0.75)*C
+
     return w
+
 
 def wb_weight(t_spar, t_panel): #Calculates weight of entrie wingbox
     #inputs: t_spar: tickness in m of spars (front and rear)
