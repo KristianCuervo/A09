@@ -282,7 +282,7 @@ def weight_f(b):
     if b > (wingspan/2):
         print("Wingspan to calculate fuel weight too high");
         sys.exit();
-    if b < (wingspan/2):
+    if b < 0:
         print("Wingspan to calculate stringer weightless than 0");
         sys.exit();  
     if b <(wingspan/2*0.75) : 
