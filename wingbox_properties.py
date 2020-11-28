@@ -285,13 +285,14 @@ def weight_f(b):
     if b < 0:
         print("Wingspan to calculate stringer weightless than 0");
         sys.exit();  
+    C = ((m2)/2) / S(wingspan/2*0.75)
     if b <(wingspan/2*0.75) : 
-        C = ((m2)/2) / S(wingspan/2*0.75)
+        
         m = S(b)* C
     
         w = 9.80665*m
     else:
-        w = S(wingspan/2*0.75)*C
+        w = S(wingspan/2*0.75)*C *9.80665
 
     return w
 
