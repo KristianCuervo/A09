@@ -3,7 +3,7 @@ import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
 from scipy import interpolate, integrate
-from wingbox_properties import wb_centroid , weight
+from wingbox_properties import wb_centroid , weight, weight_f
 
 def interpolation(x_coor, array_x, array_y):
     f = sp.interpolate.interp1d(array_x, array_y, kind = 'cubic', fill_value = 'extrapolate') 
@@ -33,11 +33,11 @@ K  = (K1+K2)/2           # take the mean of the two drag constants because they 
 
 ############ Inputs
 rho     = 1.225                   #kg/m^3 (given from altitude)
-W       = 26781*9.81              #weight of aircraft in chosen config [N]
-V       = 90                      #free stream velocity [m/s]
+W       = 122348.0              #weight of aircraft in chosen config [N]
+V       =  250.81                      #free stream velocity [m/s]
 q       = 0.5*rho*V**2            #dynamic pressure
 S       = 78.91                   #surface area wing [m^2]
-n       = 1.5                     #load factor found from wp4.3
+n       = -2.259                     #load factor found from wp4.3
 
 ############ OUTPUTS
 
@@ -65,15 +65,15 @@ def L_accent(y):  #y is location that we're interested in, CL is array, c = chor
 L_accent_array = np.array([])
 span_array = np.array([])
 
-for i in np.arange(0, 13.916, .001):
-    span_array = np.append(span_array, i)
-    L_accent_array = np.append(L_accent_array, L_accent(i))
+# for i in np.arange(0, 13.915, .001):
+#     span_array = np.append(span_array, i)
+#     L_accent_array = np.append(L_accent_array, L_accent(i))
 
 #plot the lift distribution
 
-#####plt.plot(span_array, L_accent_array, label = 'Lift per unit span [N/m]')
+# plt.plot(span_array, L_accent_array, label = 'Lift per unit span [N/m]')
 
-
+# plt.show()
 ########################################## DRAG
 Cdi_desired = Cdi_d = K*CL_d**2
 #print('\ninduced drag coefficient desired cdi_d:', Cdi_d)
@@ -93,7 +93,7 @@ def Normalforce(y):         #Normal force dependent on span-position
     Normal = L_accent(y)*np.cos(aoa_d)+Di_accent(y)*np.sin(aoa_d) 
     return Normal
 
-totalnormal = sp.integrate.quad(Normalforce, 0, 13.916)[0] - weight(13.9)
+totalnormal = sp.integrate.quad(Normalforce, 0, 13.915)[0] - weight(13.9)
 print('total Normal', totalnormal) #Total normal force which becomes negative internal shear at root
 
 def Shearforce(y):
@@ -102,21 +102,22 @@ def Shearforce(y):
 
 span1_array = np.array([])      #create empty arrays to store data
 normal_array = np.array([])
-for i in np.arange(0, 13.916, .1):
-    span1_array = np.append(span1_array, i)
-    normal = Normalforce(i)       
-    normal_array = np.append(normal_array, normal)
-plt.plot(span1_array, normal_array, label = 'NormalForce along span [N]')   
+# for i in np.arange(0, 13.915, .1):
+#     span1_array = np.append(span1_array, i)
+#     normal = Normalforce(i)       
+#     normal_array = np.append(normal_array, normal)
+#plt.plot(span1_array, normal_array, label = 'NormalForce along span [N]')   
 
 ########## SHEAR        same procedure as above
 span_array  = np.array([])
 shear_array = np.array([])
-for i in np.arange(0, 13.916, .1):
-    span_array = np.append(span_array, i)       
-    shear_array = np.append(shear_array, Shearforce(i))
+# for i in np.arange(0, 13.915, .1):
+#     span_array = np.append(span_array, i)       
+#     shear_array = np.append(shear_array, Shearforce(i))
 
-plt.plot(span_array, shear_array, label = 'ShearForce along span [N]')
-
+# plt.plot(span_array, shear_array, label = 'ShearForce along span [N]')
+# plt.show()
+print('2')
 ######## Moment
 
 def Momentforce(y):
@@ -128,46 +129,50 @@ print('total moment at root', totalmoment)
 Moment_array = np.array([])
 span_array = np.array([])
 
-""" for i in np.arange(0, 13.916, .1):
+for i in np.arange(0, 13.915, .1):
+    if i%1==0:
+        print('j')
     span_array = np.append(span_array, i)
     moment = totalmoment + Momentforce(i)       #momentforce(i) gives negative values here so
     Moment_array = np.append(Moment_array, moment)
 plt.plot(span_array, Moment_array, label = 'Moment along span [N/m]')
 plt.legend()        #makes the labels visible
-plt.show()          #show all the 3 plots in one diagram """
+plt.show()          #show all the 3 plots in one diagram 
 
 ######################## REPEAT CALCULATIONS BUT WITH FUEL
 
 
 ######## NORMAL
 def Normalforce1(y):         #Normal force dependent on span-position
-    Normal = L_accent(y)*np.cos(aoa_d) - Di_accent(y)*np.sin(aoa_d) - weight(y) - weight_f(y)
+    Normal = L_accent(y)*np.cos(aoa_d) - Di_accent(y)*np.sin(aoa_d) 
     return Normal
 
-totalnormal1 = sp.integrate.quad(Normalforce1, 0, 13.916)[0]  - weight(13.916) - weight_f(13.916)
-print('total Normal', totalnormal1) #Total normal force which becomes negative internal shear at root
+totalnormal1 = sp.integrate.quad(Normalforce1, 0, 13.915)[0]  - weight(13.915) - weight_f(13.915)
+# print('total Normal', totalnormal1) #Total normal force which becomes negative internal shear at root
 
 def Shearforce1(y):
     Shear = -totalnormal1 + sp.integrate.quad(Normalforce1, 0, y)[0]   - weight(y) - weight_f(y) #above calculated totalnormal is subtracted at the root
     return Shear
 
 span_array = np.array([])      #create empty arrays to store data
-normal1_array = np.array([])
-for i in np.arange(0, 13.916, .1):
+normal_array1 = np.array([])
+for i in np.arange(0, 13.915, .1):
     span_array = np.append(span_array, i)
     normal = Normalforce1(i)       
-    normal_array1 = np.append(normal1_array, normal)
-plt.plot(span_array, normal1_array, label = 'NormalForce along span [N]')   
-
+    normal_array1 = np.append(normal_array1, normal)
+plt.plot(span_array, normal_array1, label = 'NormalForce along span [N]')
+plt.legend()   
+plt.show()
 ########## SHEAR        same procedure as above
 span_array  = np.array([])
 shear1_array = np.array([])
-for i in np.arange(0, 13.916, .1):
+for i in np.arange(0, 13.915, .1):
     span_array = np.append(span_array, i)       
     shear1_array = np.append(shear1_array, Shearforce1(i))
 
 plt.plot(span_array, shear1_array, label = 'ShearForce along span [N]')
-
+plt.legend()   
+plt.show()
 ######## Moment
 
 def Momentforce1(y):
@@ -175,11 +180,13 @@ def Momentforce1(y):
     return Moment
 
 totalmoment1 = -Momentforce1(13.196)          #gives negative value while the bending moment at the root must be positive -> minus sign
-print('total moment at root', totalmoment)
+print('total moment at root', totalmoment1)
 Moment1_array = np.array([])
 span_array = np.array([])
 
-for i in np.arange(0, 13.916, .1):
+for i in np.arange(0, 13.915, .1):
+    if i%1==0:
+        print(i)
     span_array = np.append(span_array, i)
     moment = totalmoment1 + Momentforce1(i)       #momentforce(i) gives negative values here so
     Moment1_array = np.append(Moment1_array, moment)
@@ -222,7 +229,7 @@ def TorqueFunc(y):   #Return torque at a specific position of span
 torque_array = []
 max_torque = -TorqueFunc(13.915)
 
-for i in np.arange(0, 13.916, .1):
+for i in np.arange(0, 13.915, .1):
     span_array = np.append(span_array, i)
     torque = TorqueFunc(i) + max_torque #momentforce(i) gives negative values here some
     
@@ -233,3 +240,4 @@ for i in np.arange(0, 13.916, .1):
 plt.plot(span_array, torque_array, label = 'Torque along span (around y-axis) [N/m]')
 plt.legend()        #makes the labels visible
 plt.show()          #show all the 3 plots in one diagram 
+
