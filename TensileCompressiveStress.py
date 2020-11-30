@@ -42,7 +42,15 @@ def sigma_comp(y):
     return sigma
 
 # for loop to make it into an array
+span = np.arange(0, wingspan/2, 0.1)
 
+sigma_ten_array = np.array([])
+for i in span:
+    sigma_ten_array = np.append(sigma_ten_array, sigma_ten(i))
+
+sigma_com_array = np.array([])
+for i in span:
+    sigma_com_array = np.append(sigma_com_array, sigma_comp(i))
 
 # make graph
 
