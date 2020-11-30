@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 from multiprocessing import Process
-from Stifness_inertia import I_xx, I_xx_str, J
+from wingbox_properties import I_xx, I_xx_str, J
 from NormalShearMomentDiagrams import Momentforce, TorqueFunc
 
 # # # # # # # # DEFLECTION # # # # # # # # 
