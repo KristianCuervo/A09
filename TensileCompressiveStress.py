@@ -56,3 +56,48 @@ for i in span:
 
 
 # make polynomial formula
+
+# buckling formulae
+
+
+def col_buck(I_str):
+    critical_force= K*3.141592*E*(I_str) / (wingspan/2)^2
+    return critical_force
+
+#stringers 
+
+t = 0.002 #m thickness
+
+# centroid, inertia, area of J section stringer
+
+J = [1,2,3,4]
+
+def centroid_y_J(J):
+    y = (J[1]**2/2 + J[1]*J[2] + J[1]*J[3] - J[3]**2) / (sum(J))
+    return y
+
+def I_J(J):
+    I_a = J[0]*(centroid_y_J(J))**2
+    I_b = 1/12 * J[1]**3 *t + (J[1]/2 - centroid_y_J(J))**2*J[1]*t
+    I_c = (J[1] - centroid_y_J(J))**2*J[2]*t
+    I_d = 1/12 * J[3]**3 *t + (J[1] - J[3]/2 - centroid_y_J(J))**2*J[3]*t
+    return I_a + I_b + I_c +I_d
+
+def A_J(J):
+    return t*(sum(J))
+
+# centroid, inertia, area of L section stringer
+
+T = [1,2]
+
+def centroid_y_L(L):
+    y =  L[1]**2 / 2 / (sum(L))
+    return y
+
+def I_L(L):
+    I_a = L[0]*(centroid_y_L(L))**2
+    I_b = 1/12 * L[1] **3 + (L[1]/2 - centroid_y_L(L))**2*L[1]*t
+    return I_a + I_b 
+
+def A_L(L):
+    return t*sum(L)
