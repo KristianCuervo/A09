@@ -13,7 +13,7 @@ from wingbox_properties import *
 
 # import momentforce from NormalShearMomentDiagram
 
-from NormalShearMomentDiagrams import Momentforce, Momentforce1
+from DiagramsWP4 import Moment_positive_n, Moment_negative_n    # change Moment_positive_n to negative when calculating for n = -2.259
 
 # calculate sigma functions for tension and compression
 def dz(y): #offset of vertical position of te spar
@@ -27,7 +27,7 @@ def sigma_ten(y):
     if y > wingspan/2:
         return 0
     z  = wb_centroid(y)[1]
-    sigma = Momentforce(y)*z / (I_xx(y, ts, tk) + I_xx_str(y, A_str))
+    sigma = Moment_positive_n(y)*z / (I_xx(y, ts, tk) + I_xx_str(y, A_str))
 
     return sigma
 
@@ -38,7 +38,7 @@ def sigma_comp(y):
     if y > wingspan/2:
         return 0
     z = wb_centroid(y)[1] - (wb_rear_spar_h(y) + dz(y))
-    sigma = Momentforce(y)*z / (I_xx(y, ts, tk) + I_xx_str(y, A_str))
+    sigma = Moment_positive_n(y)*z / (I_xx(y, ts, tk) + I_xx_str(y, A_str))
     return sigma
 
 # for loop to make it into an array
