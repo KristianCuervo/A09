@@ -60,9 +60,10 @@ for i in span:
 # buckling formulae
 
 
-def col_buck(I_str):
-    critical_force= K*3.141592*E*(I_str) / (wingspan/2)^2
-    return critical_force
+def col_buck(I_str, A):
+    critical_stress= K*3.141592*E*(I_str) / (A * (wingspan/2)^2)
+    return critical_stress
+
 
 #stringers 
 
