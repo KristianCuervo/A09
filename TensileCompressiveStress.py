@@ -103,3 +103,32 @@ def I_L(L):
 
 def A_L(L):
     return t*sum(L)
+
+# Stuff for T-stringer
+
+def t_area(L1, L2):
+    return (L1+L2)*t
+
+def t_centroid(L1, L2):
+    return ((L2*t*t/2)+(L1*t*(t+L1/2)))/(t_area(L1, L2))
+
+def t_Ixx(L1, L2):       # L1 = bottom plate, L2 = flange, t = thickness
+    return 1/12 * L2 * t**3 + L2 * t * (t_centroid(L1, L2)-t/2)**2 + 1/12 * t * L1**3 + L1 * t * (L1+t-t_centroid(L1, L2)-L1/2)**2
+
+
+
+
+# Margin of safety
+
+def SafetyMargin(y):
+    return col_buck(I_J(J), A_J(J), y) / -sigma_comp(y)
+
+SafetyMarginArray = np.array([])
+
+for i in span:
+    SafetyMarginArray = np.append(SafetyMarginArray, SafetyMargin(i))
+
+print(SafetyMargin(0), col_buck(I_J(J), A_J(J), 0), -sigma_comp(0))
+
+plt.plot(span, SafetyMarginArray)
+plt.show()
