@@ -320,5 +320,8 @@ def wb_weight(t_spar, t_panel): #Calculates weight of entrie wingbox
     w = (vol_front_spar + vol_rear_spar + vol_top_panel + vol_bottom_panel + vol_stringers) * density_al
     
     return w
-
+   
+def Area_top(y):
+    return wb_top_panel(y)*t + A_str*nstringer(y)[0]
+ 
 print(wb_weight(0.005,0.005))
