@@ -97,6 +97,9 @@ def sigma_comp(y):
     sigma = Moment_positive_n(y)*z / (I_xx(y, ts, tk) + I_xx_str(y, A_J(J)))
     return sigma
 
+def F_top(y):
+    return sigma_comp(y) / Area_top(y)
+
 # for loop to make it into an array
 span = np.arange(0, wingspan/2 - 4, 0.1)
 
