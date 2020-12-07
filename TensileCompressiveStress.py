@@ -33,7 +33,7 @@ def centroid_y_J(J):
     return y
 
 def I_J(J):
-    I_a = J[0]*(centroid_y_J(J))**2
+    I_a = J[0]*t*(centroid_y_J(J))**2
     I_b = 1/12 * J[1]**3 *t + (J[1]/2 - centroid_y_J(J))**2*J[1]*t
     I_c = (J[1] - centroid_y_J(J))**2*J[2]*t
     I_d = 1/12 * J[3]**3 *t + (J[1] - J[3]/2 - centroid_y_J(J))**2*J[3]*t
@@ -122,7 +122,7 @@ plt.show()
 
 
 def col_buck(I_str, A, y):
-    critical_stress= K*3.141592*E*(I_str) / (A  * (wingspan/2)**2)
+    critical_stress= K*3.141592**2*E*(I_str) / (A  * (wingspan/2)**2)
     return critical_stress 
 
 
