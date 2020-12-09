@@ -176,9 +176,9 @@ def J(b, t1, t2): #calculate J using formula for thin walled structures
         sys.exit();
     
     A = wb_area(b)
-    C = (wb_front_spar_h(b) + wb_rear_spar_h)*t1 + (wb_bottom_panel(b) + wb_top_panel(b))*t2 #demoninator of J
+    C = (wb_front_spar_h(b) + wb_rear_spar_h(b))/t1 + (wb_bottom_panel(b) + wb_top_panel(b))/t2 #demoninator of J
     
-    J_t = 4*A^2/C
+    J_t = 4*A**2/C
     return J_t
 
 def I_xx(b, t1, t2): #calculate moment of inertia assume thin walled and spar as point area
