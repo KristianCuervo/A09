@@ -22,7 +22,7 @@ R = 287.05              #air specific gas constant [J/Kg K]
 #Print Results
 def Print_Results(W,h,H,g,R,T_0,p_0,V_B,V_C,V_D,B,G,C,F,D,E):
     file = open("results.csv","a")
-    text = f"{W:6.0f},{h:6.0f},{H},{TempPresRho(h,g,R,T_0,p_0)[2]:6.3f},{V_B:6.2f},{V_C:6.2f},{V_D:6.2f},{B:6.3f},{G:6.3f},{C:6.3f},{F:6.3f},{D:6.3f},{E:6.3f}"
+    text = f"{W:6.0f},{h:6.0f},{H:6.0f},{TempPresRho(h,g,R,T_0,p_0)[2]:6.3f},{V_B:6.2f},{V_C:6.2f},{V_D:6.2f},{B:6.3f},{G:6.3f},{C:6.3f},{F:6.3f},{D:6.3f},{E:6.3f}"
     file.write("\n" + text)
     print(text)
     file.close()
