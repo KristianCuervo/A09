@@ -22,18 +22,18 @@ from DiagramsWP4 import Moment_positive_n, Moment_negative_n        # Maybe you 
 
 #stringers 
 
-t = 0.008 #m thickness
+t = 0.003 #m thickness
 
 # centroid, inertia, area of J section stringer
 
-J = [0.1, 0.1 , 0.05, 0.03]   # bottom plate, 1st vertical plate, horizontal tip plate, small vertical plate
+J = [0.1, 0.1, 0.05, 0.03]   # bottom plate, 1st vertical plate, horizontal tip plate, small vertical plate
 
 def centroid_y_J(J):
     y = (J[1]**2/2 + J[1]*J[2] + J[1]*J[3] - J[3]**2) / (sum(J))
     return y
 
 def I_J(J):
-    I_a = J[0]*t*(centroid_y_J(J))**2
+    I_a = J[0]*(centroid_y_J(J))**2*t
     I_b = 1/12 * J[1]**3 *t + (J[1]/2 - centroid_y_J(J))**2*J[1]*t
     I_c = (J[1] - centroid_y_J(J))**2*J[2]*t
     I_d = 1/12 * J[3]**3 *t + (J[1] - J[3]/2 - centroid_y_J(J))**2*J[3]*t
@@ -98,10 +98,12 @@ def sigma_comp(y):
     return sigma
 
 def F_top(y):
-    return sigma_comp(y) / Area_top(y)
+    return sigma_comp(y) * Area_top(y)
+
+
 
 # for loop to make it into an array
-span = np.arange(0, wingspan/2 - 4, 0.1)
+span = np.arange(0, wingspan/2 - 2, 0.1)
 
 sigma_ten_array = np.array([])
 for i in span:
@@ -116,19 +118,15 @@ for i in span:
 plt.plot(span, sigma_com_array)
 plt.show()
 
-
-
-
+print(I_J(J))
 
 
 # buckling formulae
+l_rib = 5
 
-
-def col_buck(I_str, A, y):
-    critical_stress= K*3.141592**2*E*(I_str) / (A  * (wingspan/2)**2)
+def col_buck(I_str, A, l_rib):
+    critical_stress= K*3.141592**2*E*(I_str) / (A*l_rib**2)
     return critical_stress 
-
-
 
 
 
@@ -136,14 +134,14 @@ def col_buck(I_str, A, y):
 # Margin of safety
 
 def SafetyMargin(y):
-    return col_buck(I_J(J), A_J(J), y) / -sigma_comp(y)
+    return col_buck(I_J(J), A_J(J), l_rib) / -sigma_comp(y)
 
 SafetyMarginArray = np.array([])
 
 for i in span:
     SafetyMarginArray = np.append(SafetyMarginArray, SafetyMargin(i))
 
-print(SafetyMargin(0), col_buck(I_J(J), A_J(J), 0), -sigma_comp(0))
+
 
 plt.plot(span, SafetyMarginArray)
 plt.show()
