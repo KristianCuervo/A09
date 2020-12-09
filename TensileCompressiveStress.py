@@ -122,11 +122,18 @@ print(I_J(J))
 
 
 # buckling formulae
-l_rib = 5
+ribs = [0,2,5,8,wingspan/2]
 
-def col_buck(I_str, A, l_rib):
-    critical_stress= K*3.141592**2*E*(I_str) / (A*l_rib**2)
-    return critical_stress 
+def l_rib(y):
+    for i in range(len(ribs)):
+        if y < ribs[i]:
+            l = ribs[i] - ribs[i-1]
+            break
+    return l
+
+def col_buck(I_str, A, y):
+    critical_stress= K*3.141592**2*E*(I_str) / (A*l_rib(y)**2)
+    return critical_stress
 
 
 
