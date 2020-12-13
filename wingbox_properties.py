@@ -324,4 +324,5 @@ def wb_weight(t_spar, t_panel): #Calculates weight of entrie wingbox
 def Area_top(y):
     return wb_top_panel(y)*t + A_str*nstringer(y)[0]
  
-print(wb_weight(0.005,0.005))
+# print(f"wing box weight = {wb_weight(0.005,0.005)}")
+# print(f"J = {J(10.55, 0.008, 0.0025)}")
