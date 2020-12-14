@@ -74,9 +74,17 @@ def main_sea(V_i):
         if ae > 0:
             main_sea(V)
         else:
-            print(f"V_r_sea = {V}")
+            main2_sea(V)
     except:
         print(f"V_r_sea beyond Mach 1")
+
+def main2_sea(V_i):
+    V = V_i - 0.001
+    ae = ail_eff_sea(V)
+    if ae < 0:
+        main2_sea(V)
+    else:
+        print(f"V_r_sea = {V:.3f}")
 
 def main_cr(V_i):
     V = V_i + 1
@@ -85,9 +93,17 @@ def main_cr(V_i):
         if ae > 0:
             main_cr(V)
         else:
-            print(f"V_r_cr = {V}")
+            main2_cr(V)
     except:
         print(f"V_r_cr beyond Mach 1")
+
+def main2_cr(V_i):
+    V = V_i - 0.001
+    ae = ail_eff_cr(V)
+    if ae < 0:
+        main2_cr(V)
+    else:
+        print(f"V_r_cr = {V:.3f}")
 
 main_sea(0)
 main_cr(0)
