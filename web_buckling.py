@@ -1,4 +1,5 @@
 
+
 import numpy as np
 import wingbox_properties as wb
 from wingbox_properties import wb_rear_spar_h,wb_front_spar_h, wb_area
@@ -13,17 +14,17 @@ Ks = [15, 12.6, 11.5, 11, 10.5, 10, 9.75, 9.75, 9.75, 9.6, 9.5, 9.5, 9.5, 9.5, 9
 
 f_Ks = sp.interpolate.interp1d(A,Ks,kind='cubic', fill_value='extrapolate')
 E = 68.9 * 10**9
-rib_locations = [2, 5, 7,9,13 ] #this can be changed
+rib_locations =  [1,2,3,4,5.2,6.4,7.6,8.8,10.4,12] #this can be changed
 a = []
 halfspan = 27.83/2
 b = []
-for i in range(len(rib_locations)):#calculates a
+for i in range(len(rib_locations)+1):#calculates a
     if i == 0:
         a.append(rib_locations[i])
         b.append(wb_front_spar_h(rib_locations[i]/2))
-    elif i == (len(rib_locations)-1):
-        a.append(halfspan-rib_locations[i])
-        b.append(wb_front_spar_h(((halfspan-rib_locations[i])/2)+rib_locations[i]))
+    elif i == (len(rib_locations)):
+        a.append(halfspan-rib_locations[i-1])
+        b.append(wb_front_spar_h(((halfspan-rib_locations[i-1])/2)+rib_locations[i-1]))
         
         
     else:
@@ -33,30 +34,30 @@ for i in range(len(rib_locations)):#calculates a
 rib_locations.append(halfspan)
     
 kv = 1.5
-    
+print(a)    
 b_array = np.array(b)
 a_array = np.array(a)
 a_over_b = a_array/b_array
-Ks = f_Ks(a_over_b)
-print(Ks)
-def Ks(y):
-    return 9.5
-    # count = 0
-    # for i in rib_locations:
-        
-    #     if y <= i:
-    #         return Ks[count]
-    #     else:
-    #         count +=1
+Ks_array = f_Ks(a_over_b)
 
-# def b(y):
-#     count = 0
-#     for i in rib_locations:
+def Ks_return(y):
+    
+    count = 0
+    for i in rib_locations:
+        if y <= i:
+            return Ks_array[count]
+        else:
+            count +=1
+    
+
+def b_return(y):
+    count = 0
+    for i in rib_locations:
         
-#         if y <= i:
-#             return b_array[count]
-#         else:
-#             count +=1
+        if y <= i:
+            return b_array[count]
+        else:
+            count +=1
 
 
 
@@ -88,7 +89,7 @@ def total_shear(y):
 
 
 def theta_critical(y):                          #Theta is actually tau 
-    theta_critical = (np.pi**2 * Ks(y) * E * (t_spar/wb_front_spar_h(y))**2 )/ (12 *(1- nu**2))
+    theta_critical = (np.pi**2 * Ks_return(y) * E * (t_spar/wb_front_spar_h(y))**2 )/ (12 *(1- nu**2))
     return theta_critical
 
 
@@ -150,7 +151,7 @@ torsion_shear = []
 theta_critica = []
 safety = []
 #Plot
-for i in np.arange(0, 27.83/2, 0.1):
+for i in np.arange(0, halfspan, 0.1):
     span.append(i)
     torsion_shear.append(np.abs(torsion_shear_new(i)))
     theta_critica.append(theta_critical(i))
@@ -165,8 +166,4 @@ plt.show()
 print(safety_margin)
 plt.plot(span, safety)
 plt.show()
-
-
-#
-
 
