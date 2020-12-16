@@ -1,8 +1,8 @@
 from math import sqrt
 from wingbox_properties import *
 
-t1 = 0.008                              #spar thickness (mm)
-t2 = 0.0025                             #skin thickness (mm)
+t1 = 0.006                              #spar thickness (mm)
+t2 = 0.002                              #skin thickness (mm)
 
 a_sea = 340.2922869                     #speed of sound (sea level)
 a_cr = 295.0680184                      #speed of sound (cruise altitude)
@@ -57,53 +57,105 @@ def ail_eff_cr(V):
     bot = ((G*J)-(0.5*rho_cr*(V**2)*S*c*e*dC_L_a_cr(V)))
     return top/bot
 
-def V_r_sea(V):
-    top = -1*G*J*dC_L_e_sea(V)
-    bot = 0.5*rho_sea*S*c*dC_M_e_sea(V)*dC_L_a_sea(V)
-    return sqrt(top/bot)
-
-def V_r_cr(V):
-    top = -1*G*J*dC_L_e_cr(V)
-    bot = 0.5*rho_cr*S*c*dC_M_e_cr(V)*dC_L_a_cr(V)
-    return sqrt(top/bot)
+# def V_r_sea(V):
+#     top = -1*G*J*dC_L_e_sea(V)
+#     bot = 0.5*rho_sea*S*c*dC_M_e_sea(V)*dC_L_a_sea(V)
+#     return sqrt(top/bot)
+#
+# def V_r_cr(V):
+#     top = -1*G*J*dC_L_e_cr(V)
+#     bot = 0.5*rho_cr*S*c*dC_M_e_cr(V)*dC_L_a_cr(V)
+#     return sqrt(top/bot)
 
 def main_sea(V_i):
     V = V_i + 1
     ae = ail_eff_sea(V)
     try:
         if ae > 0:
-            main_sea(V)
+            return main_sea(V)
         else:
-            main2_sea(V)
+            return main2_sea(V)
     except:
-        print(f"V_r_sea beyond Mach 1")
+        return "Beyond Mach 1"
 
 def main2_sea(V_i):
     V = V_i - 0.001
     ae = ail_eff_sea(V)
     if ae < 0:
-        main2_sea(V)
+        return main2_sea(V)
     else:
-        print(f"V_r_sea = {V:.3f}")
+        return round(V, 3)
 
 def main_cr(V_i):
     V = V_i + 1
     ae = ail_eff_cr(V)
     try:
         if ae > 0:
-            main_cr(V)
+            return main_cr(V)
         else:
-            main2_cr(V)
+            return main2_cr(V)
     except:
-        print(f"V_r_cr beyond Mach 1")
+        return"Beyond Mach 1"
 
 def main2_cr(V_i):
     V = V_i - 0.001
     ae = ail_eff_cr(V)
     if ae < 0:
-        main2_cr(V)
+        return main2_cr(V)
     else:
-        print(f"V_r_cr = {V:.3f}")
+        return round(V, 3)
 
-main_sea(0)
-main_cr(0)
+def V_r_sea(V_i):
+    V = V_i + 1
+    ae = ail_eff_sea(V)
+    try:
+        if ae < 0:
+            return V_r_sea(V)
+        else:
+            return V_r2_sea(V)
+    except:
+        return "Beyond Mach 1"
+
+def V_r2_sea(V_i):
+    V = V_i - 0.001
+    ae = ail_eff_sea(V)
+    if ae < 0:
+        return V_r2_sea(V)
+    else:
+        return round(V, 3)
+
+def V_r_cr(V_i):
+    V = V_i + 1
+    ae = ail_eff_cr(V)
+    try:
+        if ae > 0:
+            return V_r_cr(V)
+        else:
+            return V_r2_cr(V)
+    except:
+        return"Beyond Mach 1"
+
+def V_r2_cr(V_i):
+    V = V_i - 0.001
+    ae = ail_eff_cr(V)
+    if ae < 0:
+        return V_r2_cr(V)
+    else:
+        return round(V, 3)
+
+
+Vd_sea = main_sea(0)
+Vd_cr  = main_cr(0)
+print(f"V_D_sea = {Vd_sea}")
+print(f"V_D_cr  = {Vd_cr}")
+
+try:
+    Vr_sea = V_r_sea(Vd_sea+1)
+except:
+    Vr_sea = V_r_sea(0)
+try:
+    Vr_cr = V_r_cr(Vd_cr+1)
+except:
+    Vr_cr = V_r_cr(0)
+print(f"V_r_sea = {Vr_sea}")
+print(f"V_r_cr  = {Vr_cr}")
