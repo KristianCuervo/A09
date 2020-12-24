@@ -36,25 +36,25 @@ def dC_L_a_cr(V):
     return dC_L_a_M0 / (sqrt(1-(V/a_cr)**2))
 
 def dC_L_e_sea(V):
-    return dC_L_e_sea_0 + V*dC_L_e_sea_slope
+    return dC_L_e_sea_0 + (V*dC_L_e_sea_slope)
 
 def dC_L_e_cr(V):
-    return dC_L_e_cr_0 + V*dC_L_e_cr_slope
+    return dC_L_e_cr_0 + (V*dC_L_e_cr_slope)
 
 def dC_M_e_sea(V):
-    return dC_M_e_sea_0 + V*dC_M_e_sea_slope
+    return dC_M_e_sea_0 + (V*dC_M_e_sea_slope)
 
 def dC_M_e_cr(V):
-    return dC_M_e_cr_0 + V*dC_M_e_cr_slope
+    return dC_M_e_cr_0 + (V*dC_M_e_cr_slope)
 
 def ail_eff_sea(V):
     top = (0.5*rho_sea*(V**2)*S*c*dC_M_e_sea(V)*dC_L_a_sea(V))+(G*J*dC_L_e_sea(V))
-    bot = ((G*J)-(0.5*rho_sea*(V**2)*S*c*e*dC_L_a_sea(V)))
+    bot = ((G*J)-(0.5*rho_sea*(V**2)*S*c*e*dC_L_a_sea(V)))*dC_L_e_sea(V)
     return top/bot
 
 def ail_eff_cr(V):
     top = (0.5*rho_cr*(V**2)*S*c*dC_M_e_cr(V)*dC_L_a_cr(V))+(G*J*dC_L_e_cr(V))
-    bot = ((G*J)-(0.5*rho_cr*(V**2)*S*c*e*dC_L_a_cr(V)))
+    bot = ((G*J)-(0.5*rho_cr*(V**2)*S*c*e*dC_L_a_cr(V)))*dC_L_e_cr(V)
     return top/bot
 
 # def V_r_sea(V):
@@ -119,7 +119,7 @@ def V_r_sea(V_i):
 def V_r2_sea(V_i):
     V = V_i - 0.001
     ae = ail_eff_sea(V)
-    if ae < 0:
+    if ae > 0:
         return V_r2_sea(V)
     else:
         return round(V, 3)
@@ -128,7 +128,7 @@ def V_r_cr(V_i):
     V = V_i + 1
     ae = ail_eff_cr(V)
     try:
-        if ae > 0:
+        if ae < 0:
             return V_r_cr(V)
         else:
             return V_r2_cr(V)
@@ -138,23 +138,23 @@ def V_r_cr(V_i):
 def V_r2_cr(V_i):
     V = V_i - 0.001
     ae = ail_eff_cr(V)
-    if ae < 0:
+    if ae > 0:
         return V_r2_cr(V)
     else:
         return round(V, 3)
 
 
 Vd_sea = main_sea(0)
-Vd_cr  = main_cr(0)
+Vd_cr  = main_cr(290.6)
 print(f"V_D_sea = {Vd_sea}")
 print(f"V_D_cr  = {Vd_cr}")
 
 try:
-    Vr_sea = V_r_sea(Vd_sea+1)
+    Vr_sea = V_r_sea(Vd_sea+0.001)
 except:
     Vr_sea = V_r_sea(0)
 try:
-    Vr_cr = V_r_cr(Vd_cr+1)
+    Vr_cr = V_r_cr(Vd_cr+0.001)
 except:
     Vr_cr = V_r_cr(0)
 print(f"V_r_sea = {Vr_sea}")
